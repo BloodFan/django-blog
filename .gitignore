@@ -15,6 +15,7 @@ celerybeat*
 .coverage
 .cache
 web/media/*
+!web/media/no-image-available.jpg
 htmlcov
 venv
 backup

@@ -1,17 +1,23 @@
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple, Optional
 from urllib.parse import urlencode, urljoin
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.core import signing
 from django.db import transaction
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.email_services import BaseEmailHandler
 
+from main import tasks
 from main.decorators import except_shell
 
 if TYPE_CHECKING:
@@ -25,6 +31,24 @@ class CreateUserData(NamedTuple):
     first_name: str
     last_name: str
     email: str
+    password_1: str
+    password_2: str
+    gender: str
+    birthday: str
+
+
+class ConfirmEmail(NamedTuple):
+    key: str
+
+
+class PasswordResetToken(NamedTuple):
+    token: str
+    uid: str
+
+
+class PasswordResetTokenConfirm(NamedTuple):
+    token: str
+    uid: str
     password_1: str
     password_2: str
 
@@ -61,6 +85,11 @@ class AuthAppService:
         return User.objects.filter(email=email).exists()
 
     @staticmethod
+    def get_user_from_uid(uid: str):
+        uid = urlsafe_base64_decode(force_str(uid))
+        return User.objects.get(id=uid)
+
+    @staticmethod
     @except_shell((User.DoesNotExist,))
     def get_user(email: str) -> User:
         return User.objects.get(email=email)
@@ -68,8 +97,106 @@ class AuthAppService:
     @transaction.atomic()
     def create_user(self, validated_data: dict):
         data = CreateUserData(**validated_data)
-        print(f'{data=}')
-        return User
+        user = User.objects.create_user(
+            email=data.email,
+            password=data.password_1,
+            first_name=data.first_name,
+            last_name=data.last_name,
+            is_active=False,
+            gender=data.gender,
+            birthday=data.birthday,
+        )
+        return user
+
+    @staticmethod
+    def validate_key(validated_data: dict) -> User:
+        """Проверка ключа подтверждения отправляемого на email."""
+        response = ConfirmEmail(**validated_data)
+        key = response.key
+        try:
+            user_id = signing.loads(
+                key, max_age=settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
+            )
+            user = User.objects.get(id=user_id)
+        except (signing.BadSignature,
+                signing.SignatureExpired,
+                User.DoesNotExist):
+            raise ValidationError('Error: invalid confirmation key')
+        return user
+
+    @staticmethod
+    def activate_user(user: User):
+        user.is_active = True
+        user.save(update_fields=['is_active'])
+
+    @staticmethod
+    def send_message(user: User):
+        template_name = 'emails/confirmation.html'
+        user_id = user.confirmation_key
+        context = {'user_id': user_id,
+                   'full_name': user.full_name,
+                   'frontend_url': settings.FRONTEND_URL}
+        subject = 'Добро пожаловать!'
+
+        tasks.send_information_email.delay(
+            subject=subject,
+            template_name=template_name,
+            context=context,
+            to_email=user.email
+        )
+
+
+class PasswordResetService:
+
+    def get_user(self, email: str) -> Optional[User]:
+        try:
+            return User.objects.get(email=email)
+        except User.DoesNotExist:
+            return None
+
+    def create_key(self, user: User) -> PasswordResetToken:
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.id))
+        return PasswordResetToken(token=token, uid=uid)
+
+    def password_handler(self, email: str):
+        user = self.get_user(email)
+        if not user:
+            return
+        tokens = self.create_key(user)
+        self.send_message(user, tokens)
+
+    def send_message(self, user: User, tokens: PasswordResetToken):
+        template_name = 'emails/reset_password.html'
+        context = {
+            'full_name': user.full_name,
+            'url':
+                f'{settings.FRONTEND_URL}confirm_reset_password/'
+                f'?token={tokens.token}&uid={tokens.uid}'
+        }
+        subject = 'Восстановление пароля, проект django-blog.'
+
+        tasks.send_information_email.delay(
+            subject=subject,
+            template_name=template_name,
+            context=context,
+            to_email=user.email
+        )
+
+    def decode_token_and_uid(self, data: NamedTuple) -> User:
+        try:
+            uid = urlsafe_base64_decode(force_str(data.uid))
+            user = User.objects.get(id=uid)
+            token = default_token_generator.check_token(user, data.token)
+            if not token:
+                raise ValidationError('Invalid token.')
+        except (User.DoesNotExist, ValueError):
+            raise ValidationError('Invalid uid.')
+        return user
+
+    def set_password(self, user: User, password: str):
+        user.set_password(password)
+        user.save(update_fields=['password'])
 
 
 def full_logout(request):

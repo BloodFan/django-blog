@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static main %}
+
+{% block head %}
+    <link href="{% static 'profile/css/profile.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block active_post %}class="active"{% endblock active_post %}
+{% block header %}
+{% include 'includes/header.html'  with selected='blog' %}
+{% endblock header %}
+
+{% block container %}
+    <p style="text-align: center">Список подписок.</p>
+    <div class="row">
+        <div class="col-lg-8" id="subscription"></div>
+    </div>
+{% endblock container %}
+
+
+{% block jquery %}
+    $.getScript('{% static 'profile/js/subscription.js' %}');
+{% endblock %}

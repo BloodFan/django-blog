@@ -1,4 +1,5 @@
 from os import environ
+from celery.schedules import crontab
 
 from kombu import Exchange, Queue
 
@@ -40,4 +41,11 @@ CELERY_TASK_QUEUES = (
 )
 
 
-CELERY_BEAT_SCHEDULE: dict[str, dict] = {}
+CELERY_BEAT_SCHEDULE: dict[str, dict] = {
+    'new_articles': {
+        'task': 'hello world again!',
+        'schedule': crontab(minute=0, hour='9'),  # один раз в день в 9 утра
+        # 'schedule': crontab(),
+        'args': ()
+    },
+}

@@ -15,6 +15,7 @@ reload: bool = bool(environ.get('GUNICORN_RELOAD', 0))
 
 # Reload gunicorn worker if request count > max_requests
 max_requests: int = 1000
+# рандомизирует Reload gunicorn worker
 max_requests_jitter: int = 200
 
 user: int = 1000

@@ -1,0 +1,39 @@
+<div style="display: grid; grid-template-columns: 1fr 1fr;">
+  <div>
+    <button id="likeButton"
+    data-model="article" 
+    data-vote="1" 
+    i class="fa fa-thumbs-o-up fa-2x" type="submit" {% if not user.is_authenticated %} disabled {% endif %}>Like</button>
+  </div>
+  <div>
+    <button id="dislikeButton"
+    data-model="article" 
+    data-vote="0" 
+    i class="fa fa-thumbs-o-down fa-2x" type="submit" {% if not user.is_authenticated %} disabled {% endif %}>DisLike</button>
+  </div>
+</div>
+<hr>
+
+{% comment %} <div style="display: grid; grid-template-columns: 1fr 1fr;">
+  <form role="form" id="likeForm">
+    <input type='hidden' name='model' value='article'>
+    <input type='hidden' name='object_id' value='' id="object_id">
+    <input type='hidden' name='vote' value='1'>
+
+    <button id="likeButton"
+    data-model="article" 
+    data-id="1"
+    data-vote="1" 
+    i class="fa fa-thumbs-o-up fa-2x" type="submit" {% if not user.is_authenticated %} disabled {% endif %}>Like</button>
+
+  </form>
+  
+  <form role="form" id="dislikeForm">
+    <input type='hidden' name='model' value='article'>
+    <input type='hidden' name='object_id' value='' id="object_id_2">
+    <input type='hidden' name='vote' value='0'>
+
+    <button id="dislikeButton" i class="fa fa-thumbs-o-down fa-2x" type="submit" {% if not user.is_authenticated %} disabled {% endif %}>DisLike</button>
+  </form>
+</div>
+<hr> {% endcomment %}

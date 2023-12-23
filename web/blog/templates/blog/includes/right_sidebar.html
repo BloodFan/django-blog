@@ -1,43 +1,26 @@
+{% comment %} <script src="https://kit.fontawesome.com/ac97f29afd.js" crossorigin="anonymous"></script> {% endcomment %}
 <div class="col-lg-4">
   <div class="well">
     <h4><i class="fa fa-search"></i> Blog Search...</h4>
     <div class="input-group">
-      <input type="text" class="form-control">
+      <input type="text" class="form-control" id="searchField" placeholder='search'>
       <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">
+                            <button id="searchButton" class="btn btn-default" type="button">
                                 <i class="fa fa-search"></i>
+                            </button>
+                            <button id="cleanButton"  class="btn btn-default" type="button">del
                             </button>
                         </span>
     </div>
     <!-- /input-group -->
   </div>
-  <!-- /well -->
+  <!-- /well --> 
   <div class="well">
     <h4><i class="fa fa-tags"></i> Popular Tags:</h4>
     <div class="row">
-      <div class="col-lg-6">
-        <ul class="list-unstyled">
-          <li><a href=""><span class="badge badge-info">Windows 8</span></a>
-          </li>
-          <li><a href=""><span class="badge badge-info">C#</span></a>
-          </li>
-          <li><a href=""><span class="badge badge-info">Windows Forms</span></a>
-          </li>
-          <li><a href=""><span class="badge badge-info">WPF</span></a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-lg-6">
-        <ul class="list-unstyled">
-          <li><a href=""><span class="badge badge-info">Bootstrap</span></a>
-          </li>
-          <li><a href=""><span class="badge badge-info">Joomla!</span></a>
-          </li>
-          <li><a href=""><span class="badge badge-info">CMS</span></a>
-          </li>
-          <li><a href=""><span class="badge badge-info">Java</span></a>
-          </li>
-        </ul>
+      <div class="wrap"> 
+        <ol id="tagList">
+        </ol>
       </div>
     </div>
   </div>

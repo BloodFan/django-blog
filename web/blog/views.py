@@ -1,4 +1,5 @@
 import logging
+
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 
@@ -10,6 +11,8 @@ from main.pagination import BasePageNumberPagination
 
 logger = logging.getLogger(__name__)
 
+
+# ВСЕ ЗДЕСЬ НЕ ИСПОЛЬЗУЕТСЯ, ОТСТАВИЛ ИЗ-ЗА СТРОЧКИ ЛОГГЕРА
 
 class ViewSet(ModelViewSet):
     http_method_names = ('get', 'post', 'put', 'delete')

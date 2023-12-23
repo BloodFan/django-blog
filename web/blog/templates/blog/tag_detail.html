@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+{% load static main %}
+{% block title %}Tag Detail{% endblock title%}
+
+{% block container %}
+
+
+<div class="row">
+  <div class="col-lg-8" id="tagDetail">
+
+  </div>
+  {% include 'blog/includes/right_sidebar.html' %}
+</div>
+{% endblock container %}
+
+{% block jquery %}
+$.getScript('{% static 'blog/js/tag_detail.js' %}');
+{% endblock %}

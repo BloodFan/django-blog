@@ -1,0 +1,10 @@
+{% extends 'auth_app/base.html'%}
+{% load static %}
+
+{% block container %}
+    <p>hello world!</p>
+{% endblock container %}
+
+{% block jquery %}
+    $.getScript('{% static 'auth_app/js/confirm.js' %}');
+{% endblock %}

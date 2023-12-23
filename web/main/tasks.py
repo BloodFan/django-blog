@@ -19,13 +19,14 @@ class SendingEmailTaskArgs(app.Task):
 
 @app.task(name='email.send_information_email', base=SendingEmailTaskArgs)
 def send_information_email(
-    *,
+    *,  # Все аргументы после * должны быть переданы в виде ключевых
     subject: str,
     template_name: str,
-    context: dict,
     to_email: list[str] | str,
+    context: dict,
     letter_language: str = 'en',
     **kwargs: Optional[Any],
+
 ) -> bool:
     """
     :param subject: email subject
@@ -44,6 +45,7 @@ def send_information_email(
         bcc=kwargs.get('bcc'),
         cc=kwargs.get('cc'),
         reply_to=kwargs.get('reply_to'),
+        connection=kwargs.get('connection')
     )
     html_email: str = loader.render_to_string(template_name, context)
     email_message.attach_alternative(html_email, 'text/html')

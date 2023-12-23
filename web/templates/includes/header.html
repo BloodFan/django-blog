@@ -17,8 +17,14 @@
       <li {% if selected == 'index' %}class="active"{% endif %}><a href="{% url 'index' %}">
       <i class="fa fa-home"></i> Home</a>
       </li>
-      <li {% if selected == 'blog' %}class="active"{% endif %}><a href="{% url 'blog:blog-list' %}">
-      <i class="fa fa-book"></i> Posts</a>
+      <li>
+        <li class="dropdown" {% if selected == 'blog' %}class="active"{% endif %}><a href="{% url 'blog:blog-list' %}">
+          <i class="fa fa-book"></i> Posts</a>
+          {% if user.is_authenticated %}
+          <div class="dropdown-content">
+            <a href="{% url 'blog:blog-create' %}">Create Post</a>
+          </div>
+          {% endif %}
       </li>
       <li {% if selected == 'contact_us' %}class="active"{% endif %}><a href="{% url 'contact_us:index' %}">
       <i class="fa fa-envelope"></i> Contact</a>
@@ -26,7 +32,6 @@
       <li {% if selected == 'about' %}class="active"{% endif %}>
       <a href=""></i> About</a>
       </li>
-
       <form class="navbar-form navbar-right">
         <input type="text" class="form-control col-lg-8" placeholder="Search...">
       </form>

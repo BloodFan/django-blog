@@ -37,10 +37,11 @@ INTERNAL_IPS: list[str] = []
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
-FRONTEND_URL = os.environ.get('FRONTEND_URL')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8008/')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'test@test.com')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
-EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+EMAIL_CONFIRMATION_EXPIRE_DAYS = 3 * 86400
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -69,6 +70,8 @@ LOCAL_APPS = [
     'auth_app.apps.AuthAppConfig',
     'blog.apps.BlogConfig',
     'contact_us.apps.ContactUsConfig',
+    'user_profile.apps.ProfileAppConfig',
+    'actions.apps.ActionsConfig',
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
