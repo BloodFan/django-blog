@@ -127,11 +127,11 @@ class BlogService:
             return LikeStatus.DOES_NOT_EXIST
 
     def admin_notify(self, time_period: datetime) -> Article:
+        """Создано для Selery task"""
         return (self.get_active_articles()
                 .filter(created__gte=time_period)
-                .annotate(vote_count=ExpressionWrapper(
-                    F('up_votes')+F('down_votes'),
-                    output_field=IntegerField()),
+                .annotate(
+                    vote_count=ExpressionWrapper(F('up_votes')+F('down_votes'), output_field=IntegerField()),
                     tags_list=ArrayAgg('tags__name', distinct=True)
                 )
                 .values(

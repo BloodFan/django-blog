@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from actions.models import Like
+from actions.models import Like, Action, ActionUsers
 from .services import LikeObjectsChoices
+from blog.models import Article, Comment
 from main.models import User
 
 
@@ -38,3 +39,77 @@ class FollowingSerializer(serializers.ModelSerializer):
             'image',
             'is_follower',
         )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Предназначен для ActionSerializer"""
+    url = serializers.CharField(source='get_absolute_url')
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'full_name',
+            'url',
+            'image',
+        )
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    """Предназначен для ActionSerializer"""
+    url = serializers.CharField(source='get_absolute_url')
+    type = serializers.CharField(default='article', read_only=True)
+
+    class Meta:
+        model = Article
+        fields = (
+            'title',
+            'url',
+            'type'
+        )
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    """Предназначен для ActionSerializer"""
+    title = serializers.CharField(source='article.title')
+    url = serializers.CharField(source='article.get_absolute_url')
+    type = serializers.CharField(default='comment', read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = (
+            'title',
+            'url',
+            'type'
+        )
+
+
+class ActionSerializer(serializers.ModelSerializer):
+    content_object = serializers.SerializerMethodField()
+    user = UserSerializer()
+
+    class Meta:
+        model = Action
+        fields = '__all__'
+
+    def get_content_object(self, obj: Action) -> dict:
+        match obj.content_object:
+            case User() as user:
+                data = UserSerializer(user).data
+                return data
+            case Article() as article:
+                data = ArticleSerializer(article).data
+                return data
+            case Comment() as comment:
+                data = CommentSerializer(comment).data
+                return data
+            case _:
+                pass
+
+
+class ActionUsersCreateSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+
+    class Meta:
+        model = ActionUsers
+        fields = ('id', )

@@ -39,3 +39,9 @@ django-microservice-request~=0.5
 
 # TextEditor
 django-summernote==0.8.20.0
+
+# pytest-freezegun
+pytest-freezegun
+
+# create-article.slug
+transliterate

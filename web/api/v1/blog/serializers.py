@@ -3,11 +3,15 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from base64 import b64decode
 from django.core.files.base import ContentFile
+from django.utils.text import slugify
+
+from transliterate import translit
 
 from blog.models import Article, Category, Comment, Tag
 from .services import BlogService
-from actions.choices import ActionEvent
+from actions.choices import ActionEvent, ActionMeta
 from api.v1.actions.services import ActionService
+
 User = get_user_model()
 
 
@@ -49,13 +53,20 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('user', 'content', 'parent')
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> Comment:
         slug = self.context['view'].kwargs['slug']
         article = Article.objects.get(slug=slug)
         validated_data['article'] = article
-        return super().create(validated_data)
+        comment = super().create(validated_data)
+        ActionService(
+            event=ActionEvent.CREATE_COMMENT,
+            user=validated_data['user'],
+            content_object=comment,
+            meta=ActionMeta[ActionEvent.CREATE_COMMENT](),
+        ).create_action()  # лист активностей
+        return comment
 
-    def validate_parent(self, parent):
+    def validate_parent(self, parent: Comment) -> Comment:
         if parent is not None and parent.parent is not None:
             raise ValidationError('Комментарий не может быть parent и children одновременно.')
         if parent is not None and self.context['view'].kwargs['slug'] != parent.article.slug:
@@ -112,7 +123,6 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 class FullArticleSerializer(ArticleSerializer):
     user_like_status = serializers.SerializerMethodField()
-    # user_like = serializers.SerializerMethodField(method_name='get_user_like')
 
     class Meta(ArticleSerializer.Meta):
         fields = ArticleSerializer.Meta.fields + ('user_like_status',)
@@ -152,13 +162,21 @@ class CreateArticleSerializer(serializers.ModelSerializer):
         extention = mime_type.split('/')[-1]
         return ContentFile(image, f'name_image.{extention}')
 
+    def validate_title(self, title):
+        translit_title = translit(title, 'ru', reversed=True)
+        slug = slugify(translit_title)
+        if Article.objects.filter(slug=slug).exists():
+            raise serializers.ValidationError({"type_error": "This title already exists."})
+        return title
+
     def create(self, validated_data):
         article = super().create(validated_data)
         ActionService(
             event=ActionEvent.CREATE_ARTICLE,
             user=article.author,
-            content_object=article
-        ).create_action()
+            content_object=article,
+            meta=ActionMeta[ActionEvent.CREATE_ARTICLE](),
+        ).create_action()  # лист активностей
         service = BlogService()
         service.send_message(article.author)
         service.send_message_for_admin(article.author, article)

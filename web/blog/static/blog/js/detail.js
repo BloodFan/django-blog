@@ -7,21 +7,22 @@ $(function () {
     $('#likeButton').click(likeHandler);
     // $('#dislikeForm').submit(likeHandler);
     $('#dislikeButton').click(likeHandler);
+
 });
 
 
 function articleDetail () {
   let slug = window.location.pathname.split('/').filter(Boolean).slice(-1)
-    $.ajax({
-        url: `/api/v1/article/articles/${slug}/`,
-        type: 'get',
-        success: function(data) {
-          successHandler(data)
-        },
-        error: function(data) {
-          console.log('error', data)
-        }
-    })
+  $.ajax({
+      url: `/api/v1/article/articles/${slug}/`,
+      type: 'get',
+      success: function(data) {
+        successHandler(data)
+      },
+      error: function(data) {
+        console.log('error', data)
+      }
+  })
 };
 
 function tagTemplate (tag) {
@@ -68,6 +69,19 @@ function successHandler (data) {
   $('.articleTags').click(tagClickHandler)
 }
 
+function getScrollTo(scroll){
+  // let scroll = window.location.href.split('=')[1]
+  // const element = document.getElementById(scroll);
+  // element.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+  // console.log(scroll)
+  const element = document.getElementById(scroll);
+  console.log(element)
+  element.scrollTo({
+    top: element.clientHeight / 2,
+    left: element.clientWidth / 2,
+    behavior: "smooth"
+  });
+}
 
 function tagClickHandler(e) {
   e.preventDefault();
@@ -182,7 +196,8 @@ function successCommentsHandler (data) {
   commentsList.append(data.map(comment=>commentTemplate(comment)).join(''))
   $('.addChildComment').click(childCommentHandler)
   $('.likeComment').click(likeHandler);
-
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('scrollTo')) getScrollTo(params.get('scrollTo'))
 }
 
 function childCommentHandler(){

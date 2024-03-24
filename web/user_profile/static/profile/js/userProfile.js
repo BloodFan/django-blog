@@ -23,6 +23,7 @@ function successProfileHandler (data) {
     profile.append(template)
     setVariable(data)
     $('#follow').click(followHandler);
+    $('#chat').click(startChatMessageHandler);
 };
 
 function profileTemplate (user) {
@@ -78,6 +79,10 @@ function profileTemplate (user) {
        <br>
         ${button}
     </div>
+    <div class="col-xs-12">
+    <br>
+      <button id="chat" data-userId="${user.id}"  class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Написать сообщение.</button>
+    </div>
   </div>
     `
 }
@@ -85,9 +90,9 @@ function profileTemplate (user) {
 function setVariable (data) {
     document.getElementById("imageAvatar").src=data.image; // вывод аватарки
     var link = document.getElementById("followingLink"); // список на кого подписан user
-    link.setAttribute("href", "/profile/subscriptions/?search=following&user_id="+data.id);
+    link.setAttribute("href", `/profile/subscriptions/?search=following&user_id=${data.id}`);
     var link = document.getElementById("followersLink");// список кто подписан на user'a
-    link.setAttribute("href", "/profile/subscriptions/?search=followers&user_id="+data.id);
+    link.setAttribute("href", `/profile/subscriptions/?search=followers&user_id=${data.id}`);
     $("#gender").val(data.gender); // актуальное значение поля "gender"
     $('#likesCount').text(` ${data.like_count}`); // количество лайков
     $('#commentCount').text(` ${data.comment_count}`); // количество комментариев
@@ -128,4 +133,11 @@ function updateFollowButton(status){
     button.style.backgroundColor = "red";
     button.textContent = "Отписаться";
   }
+}
+
+function startChatMessageHandler() {
+  userId = $(this).attr('data-userId')
+  console.log('userId', userId)
+  const url = `${chatUrl}/chat/init/?userId=${userId}`// Переменная из settings.py для адреса Chat(добавлена в head в HTML)
+  window.open(url, '_blank').focus()
 }

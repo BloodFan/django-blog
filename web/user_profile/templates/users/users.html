@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static main %}
+
+{% block head %}
+    <link href="{% static 'profile/css/profile.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block active_post %}class="active"{% endblock active_post %}
+{% block header %}
+{% include 'includes/header.html'  with selected='blog' %}
+{% endblock header %}
+
+{% block container %}
+    <h1 style="text-align: center">Пользователи сайта</h1>
+    <h2 style="text-align: center">Фильтрация пользователей</h2>
+    <div class="row">
+        <div class="row" style="text-align: center">
+            <a href="" data-order='article_count' class='order'><span class="badge badge-info">по кол-ву постов(по возростанию)</span></a>
+            <a href="" data-order='id' class='order'><span class="badge badge-info">дате регистрации(от начала)</span></a>
+            <a href="" data-order='comment_count' class='order'><span class="badge badge-info">по кол-ву комментариев(по возростанию)</span></a>
+        </div>
+        <div class="row" style="text-align: center">
+            <a href="" data-order='-article_count' class='order'><span class="badge badge-info">по кол-ву постов(по убыванию)</span></a>
+            <a href="" data-order='-id' class='order'><span class="badge badge-info">дате регистрации(с конца)</span></a>
+            <a href="" data-order='-comment_count' class='order'><span class="badge badge-info">по кол-ву комментариев(по убыванию)</span></a>
+        </div>
+        <div class="row">
+            <div class="col-lg-8" id="users"></div>
+        </div>
+    </div>
+{% endblock container %}
+
+
+{% block jquery %}
+    $.getScript('{% static 'profile/js/users.js' %}');
+{% endblock %}

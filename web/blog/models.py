@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse_lazy
 from django.contrib.contenttypes.fields import GenericRelation
 
+from transliterate import translit
+
 from .choices import ArticleStatus
 from actions.models import Like
 
@@ -59,7 +61,8 @@ class Article(models.Model):
 
     def save(self, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            slug = translit(self.title, 'ru', reversed=True)
+            self.slug = slugify(slug)
         return super().save(**kwargs)
 
     def get_absolute_url(self):

@@ -46,5 +46,7 @@ function cleanSearch () {
     const url = new URL(window.location);
     url.searchParams.delete('tags')
     url.searchParams.delete('search')
+    url.searchParams.delete('author')
     window.history.pushState(null, '', url.toString());
+    articleList()
 }

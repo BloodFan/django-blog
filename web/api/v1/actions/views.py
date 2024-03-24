@@ -1,12 +1,14 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework import status
 
 from .serializers import (LikeSerializer, FollowingCreateSerializer,
-                          FollowingSerializer)
+                          FollowingSerializer, ActionSerializer,
+                          ActionUsersCreateSerializer)
 from .services import (LikeService, FollowingService,
-                       FollowingListService)
+                       FollowingListService, ActionQueryset,
+                       ActionUsersService)
 from actions.models import Like
-from main.models import User
 from ..user_profile.filters import SubscriptionFilter
 
 
@@ -51,7 +53,31 @@ class FollowingListAPIView(GenericAPIView):
 
     def get(self, request):
         service = FollowingListService(request.user)
-        queryset = service.list_handler()
+        queryset = service.get_queryset()
         queryset = self.filter_queryset(queryset)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class ActionListAPIView(GenericAPIView):
+    serializer_class = ActionSerializer
+
+    def get(self, request):
+        queryset = ActionQueryset().get_queryset(request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class ActionUsersAPIView(GenericAPIView):
+    serializer_class = ActionUsersCreateSerializer
+
+    def post(self, request):
+        '''Ознакомление пользователя с новостью.'''
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = ActionUsersService()
+        service.create_actionusers_relation(
+            user=request.user,
+            action_id=serializer.data['id']
+        )
+        return Response(status=status.HTTP_201_CREATED)

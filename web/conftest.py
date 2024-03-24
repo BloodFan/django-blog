@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.test.client import Client
 
-from blog.models import Category, Tag
+from blog.models import Category, Tag, Article
 
 pyteststmark = [pytest.mark.django_db]
 
@@ -53,9 +53,23 @@ def category() -> Category:
 
 @pytest.fixture
 def tags() -> Tag:
-    """Создание категории для тестирования."""
+    """Создание тегов для тестирования."""
     tags_list = [
        Tag(name='Tag_for_testing_1', slug='test_Tag_1'),
        Tag(name='Tag_for_testing_2', slug='test_Tag_2'),
     ]
     return Tag.objects.bulk_create(tags_list)
+
+
+@pytest.fixture
+def article(category, tags, user) -> Article:
+    """Создание Article для тестирования."""
+    article = Article.objects.create(
+        author=user,
+        title='test_title',
+        content='Абсолютно все, что угодно!',
+        image='no-image-available.jpg',  #  путь к файлу а не base64
+        category=category,
+    )
+    article.tags.set(tags)
+    return article

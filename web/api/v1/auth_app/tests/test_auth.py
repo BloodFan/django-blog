@@ -23,13 +23,16 @@ def test_register_user(client):
         'last_name': 'test_last_name',
         'email': 'test_user_email@mail.com',
         'password_1': 'test_password3210',
-        'password_2': 'test_password3210'
+        'password_2': 'test_password3210',
+        'birthday': '2000-01-01',
+        'gender': '1'
     }
 
     response = client.post(
         path=reverse('api:v1:auth_app:sign-up'),
         data=payload,
     )
+    print(f'{response.status_code=}')
     assert response.status_code == status.HTTP_201_CREATED
     # пользователь создан
     user = User.objects.get(email=payload['email'])
@@ -136,7 +139,9 @@ def test_login_inactive_user(
             'last_name': 'El jonson',
             'email': 'Dark_Angel@mail.com',
             'password_1': 'test_password3210',
-            'password_2': 'test_password3210'
+            'password_2': 'test_password3210',
+            'birthday': '2000-01-01',
+            'gender': '1'
         }, status.HTTP_201_CREATED),
         ({
             'first_name': '',

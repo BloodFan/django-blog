@@ -8,6 +8,9 @@ from .additional_settings.summernote_settings import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+CHAT_URL = os.environ.get('CHAT_URL', 'http://127.0.0.1:8010')
+BLOG_HEADERS_PERMISSION = os.environ.get('BLOG_HEADERS_PERMISSION', 'owNV8NCVt0WuaCihX3Fy4kfV')
+
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-b2sh!qk&=%azim-=s&=d1(-1upbq7H&-^-=tmPeHPLKXD')
 
 DEBUG = int(os.environ.get('DEBUG', 1))
@@ -117,6 +120,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'user_profile.context_processors.chat_url'
             ],
         },
     },

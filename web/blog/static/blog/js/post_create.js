@@ -17,7 +17,8 @@ function createBlog(e){
           successHandler()
         },
         error: function(data) {
-          console.log('error', data)
+          console.log('error', data.responseJSON.title)
+          alert('error: ' + JSON.stringify(data.responseJSON.title))
         }
       })
 }

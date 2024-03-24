@@ -4,12 +4,13 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from api.v1.actions.services import ActionService
-from actions.choices import ActionEvent
+from actions.choices import ActionEvent, ActionMeta
 from .services import UserProfileService
 from .serializers import (ProfileSerializer,
                           UpdateProfileSerializer,
                           UpdateImageSerializer,
-                          ChangePasswordSerializer)
+                          ChangePasswordSerializer,
+                          UsersListSerializer)
 
 User = get_user_model()
 
@@ -54,8 +55,9 @@ class UpdateImageAPIView(GenericAPIView):
         ActionService(
             event=ActionEvent.UPDATE_AVATAR,
             user=request.user,
-            content_object=request.user
-        ).create_action()
+            content_object=request.user,
+            meta=ActionMeta[ActionEvent.UPDATE_AVATAR](str(request.user.image))
+        ).create_action()  # лента новостей
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -67,4 +69,15 @@ class UserProfile(GenericAPIView):
     def get(self, request, id):
         user = UserProfileService().get_user(self.request.user, id)
         serializer = self.get_serializer(user)
+        return Response(serializer.data)
+
+
+class UserList(GenericAPIView):
+    serializer_class = UsersListSerializer
+
+    def get(self, request):
+        order = self.request.query_params.get('order', '-article_count')
+        service = UserProfileService()
+        queryset = service.get_queryset_by_order(order, request.user)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

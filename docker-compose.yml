@@ -3,6 +3,7 @@ x-variables: &variables
 
 services:
   web:
+    hostname: web-blog
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile

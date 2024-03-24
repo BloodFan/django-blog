@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ProfileAPIView, ChangePasswordAPIView, UpdateImageAPIView, UserProfile
+from .views import ProfileAPIView, ChangePasswordAPIView, UpdateImageAPIView, UserProfile, UserList
 
 app_name = 'user-profile'
 
@@ -9,4 +9,5 @@ urlpatterns = [
     path('change-password/', ChangePasswordAPIView.as_view(), name='change-password'),
     path('image/', UpdateImageAPIView.as_view(), name='update-image'),
     path('profile/<int:id>/', UserProfile.as_view(), name='profile'),
+    path('users-list/', UserList.as_view(), name='users-list'),
 ]

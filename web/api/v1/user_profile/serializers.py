@@ -5,8 +5,6 @@ from django.core.files.base import ContentFile
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.password_validation import validate_password
 
-from actions.models import Following
-
 User = get_user_model()
 
 error_messages = {
@@ -80,3 +78,23 @@ class ChangePasswordSerializer(serializers.Serializer):
         if data['new_password1'] != data['new_password2']:
             raise serializers.ValidationError({'password_2': error_messages['password_not_match']})
         return data
+
+
+class UsersListSerializer(serializers.ModelSerializer):
+    url = serializers.CharField(source='get_absolute_url')
+    comment_count = serializers.IntegerField()
+    article_count = serializers.IntegerField()
+    is_follower = serializers.BooleanField()
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'full_name',
+            'url',
+            'image',
+            'email',
+            'comment_count',
+            'article_count',
+            'is_follower',
+        )

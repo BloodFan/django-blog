@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import Like, Action
+from .models import Like, Action, ActionUsers
+
+
+@admin.register(ActionUsers)
+class ActionUsersAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Like)
@@ -11,4 +16,4 @@ class LikeAdmin(admin.ModelAdmin):
 
 @admin.register(Action)
 class ActionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'content_object', 'date')
+    list_display = ('user', 'event', 'content_object', 'date')

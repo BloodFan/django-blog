@@ -4,7 +4,7 @@ from rest_framework.exceptions import NotFound
 
 from main.models import User
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # убирает ошибку цикличного импорта
     from api.v1.actions.views import FollowingListAPIView
 
 

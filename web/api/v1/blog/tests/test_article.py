@@ -6,8 +6,10 @@ from django.core import mail
 from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
+from django.conf import settings
 
 from blog.models import Article
+from blog.choices import ArticleStatus
 
 pytestmark = [pytest.mark.django_db,]
 User = get_user_model()
@@ -18,8 +20,8 @@ email_settings = override_settings(
 
 
 @email_settings
-def test_create_article(auth_client, category, tags):
-    """Интеграционный тест."""
+def test_create_article(auth_client, category, tags, admin_client):
+    """Создание блога."""
     article_count = Article.objects.count()
     assert article_count == 0
     payload = {
@@ -33,32 +35,42 @@ def test_create_article(auth_client, category, tags):
         path=reverse('api:v1:blog:articles-list'),
         data=payload,
     )
-    assert response.status_code == status.HTTP_201_CREATED
 
     article_count = Article.objects.count()
-    article = Article.objects.first()
+    article = Article.objects.order_by("-id")[0]  # first()
 
+    assert response.status_code == status.HTTP_201_CREATED
     assert article_count == 1
+    # пост создан
 
-    payload = {
-        'content': 'Ваш тестовый пост - это сущая лажа!',
-    }
+    assert article.status == ArticleStatus.INACTIVE
+    # пост невиден пользователю
 
-    response = auth_client.post(
-        path=reverse('api:v1:blog:comments', kwargs={'slug': article.slug}),
-        data=payload,
+    assert len(mail.outbox) == 2
+    # Создается 2 сообщения
+
+    assert mail.outbox[0].to[0] == article.author.email
+    # Уходит сообщение создателю поста
+
+    assert mail.outbox[1].to[0] == settings.ADMIN_EMAIL
+    # Уходит сообщение администратору
+
+    string = mail.outbox[1].alternatives[0][0]
+    id = int(re.findall(r'(?<=/admin/blog/article/).+(?=/change/)', string)[0])
+
+    assert id == article.id
+    # Админу отправляется ссылка с корректным id
+
+    response = admin_client.post(
+        # path=f'/admin/blog/article/{id}/change/',
+        path=reverse(f'admin:{article._meta.app_label}_{type(article).__name__.lower()}_change', args=(id,)),
+        data={'_make-active': 'Make Active'}  # status article не обновляется
     )
+    # article._meta.app_label название приложение модели - blog
+    # type(article).__name__.lower() название модели - article
+    assert response.status_code == status.HTTP_200_OK
 
-    assert article.comment_set.count() == 1
+    article = Article.objects.first()
+    # article.status = ArticleStatus.ACTIVE
 
-    payload = {
-        'content': 'И я горжусь этим!',
-        'parent': article.comment_set.first().id
-    }
-
-    response = auth_client.post(
-        path=reverse('api:v1:blog:comments', kwargs={'slug': article.slug}),
-        data=payload,
-    )
-
-    assert article.comment_set.count() == 2
+    assert article.status == ArticleStatus.ACTIVE

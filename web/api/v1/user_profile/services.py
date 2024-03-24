@@ -23,7 +23,7 @@ class UserProfileService:
             raise NotFound({'Status': 'User not found.'})
 
     def get_current_user(self, current_user: User):
-        ''' Прокладка. Причина - необходимость request.user для is_follower.'''
+        '''Прокладка. Причина - необходимость request.user для is_follower.'''
         return self.get_user(current_user, current_user.id)
 
     def user_queryset(self) -> QuerySet[User]:
@@ -63,3 +63,6 @@ class UserProfileService:
             user.save()
             return {'status': 'Password changed successfully.', 'status_code': status.HTTP_200_OK}
         return {'status': 'Error - Incorrect old password.', 'status_code': status.HTTP_400_BAD_REQUEST}
+
+    def get_queryset_by_order(self, order: str, user: User) -> QuerySet[User]:
+        return self.annotate_queryset_is_follower(user).order_by(order)

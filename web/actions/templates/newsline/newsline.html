@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static main %}
+
+{% block head %}
+    <link href="{% static 'profile/css/profile.css' %}" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+{% endblock head %}
+
+{% block active_post %}class="active"{% endblock active_post %}
+{% block header %}
+{% include 'includes/header.html'  with selected='blog' %}
+{% endblock header %}
+
+{% block container %}
+    <h1 style="text-align: center">Лента новостей</h1>
+    <h3 style="text-align: center">Действия тех, на кого вы подписаны</h3>
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-8" id="newsline"></div>
+        </div>
+    </div>
+{% endblock container %}
+
+
+{% block jquery %}
+    $.getScript('{% static 'js/newsline.js' %}');
+{% endblock %}
