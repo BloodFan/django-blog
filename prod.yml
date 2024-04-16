@@ -4,6 +4,7 @@ x-variables: &variables
 
 services:
   web:
+    hostname: web-blog
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
@@ -15,7 +16,7 @@ services:
     environment:
       <<: *variables
     ports:
-      - "8000:8000"
+      - "8000:80"
     env_file:
       - docker/prod/env/.env
       - docker/prod/env/.db.env
@@ -98,5 +99,6 @@ volumes:
 networks:
   microservice_network:
     driver: bridge
+    name: local_microservice_network
   separated_network:
     driver: bridge

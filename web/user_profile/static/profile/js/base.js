@@ -96,16 +96,20 @@ function successUpdateProfileHandler(data){
 
 function fileUploadHandler(e) {
     const files = this.files
+    console.log(1, files)
     if (files) {
         var reader = new FileReader();
-
+        console.log(2, files)
         reader.onload = function (e) {
             console.log('3', $(this))
+            console.log('3', 5,  $(this))
             updateImage(e.target.result)
             // $('#image').attr('value', e.target.result)
         }
 
         reader.readAsDataURL(files[0]);
+        console.log(2, 5, files[0])
+
     }
 }
 

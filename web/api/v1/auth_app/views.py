@@ -8,7 +8,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from . import serializers
-from .services import AuthAppService, PasswordResetService, PasswordResetToken, PasswordResetTokenConfirm, full_logout
+from .services import (AuthAppService, PasswordResetService,
+                       PasswordResetToken, PasswordResetTokenConfirm,
+                       full_logout)
+from .addictional_service import LoginService
 
 User = get_user_model()
 
@@ -50,6 +53,27 @@ class SignUpView(GenericAPIView):
 
 class LoginView(auth_views.LoginView):
     serializer_class = serializers.LoginSerializer
+
+
+# class LoginView(GenericAPIView):
+#     permission_classes = (AllowAny,)
+#     serializer_class = serializers.LoginSerializer
+
+#     def post(self, request):
+#         service = LoginService()
+
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+
+#         data = service.get_tokens(serializer.validated_data['user'])
+
+#         jwt_serializer = serializers.JWTSerializer(data=data)
+#         jwt_serializer.is_valid(raise_exception=True)
+
+#         response = Response(jwt_serializer.data, status=status.HTTP_200_OK)
+#         service.set_cookie(response)
+
+#         return response
 
 
 class LogoutView(auth_views.LogoutView):

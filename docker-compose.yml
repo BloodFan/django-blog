@@ -5,22 +5,28 @@ services:
   web:
     hostname: web-blog
     build:
-      context: .
-      dockerfile: docker/dev/web/Dockerfile
+      context: . 
+      # указывает стартовую точку, просто точка == директория где лежит сам docker-compose
+      # стартовую точка актуальна для команд внутри dockerfile
+      # для  COPY ./web/src/requirements  ./src/requirements источником будет => папка_где_docker-compose.yml/web/src/requirements
+      dockerfile: docker/dev/web/Dockerfile # указывает дальнейший путь => папка_где_docker-compose.yml/docker/dev/web/Dockerfile
     volumes:
-      - ./web/:/usr/src/web/
+      - ./web/:/usr/src/web/ #  => папка_где_docker-compose.yml/web/:абсолютный путь к volume
+      # дает возможность отображать изменения в коде без пересборки контейнера(только для режима отладки, на проде использовать COPY)
       - postgres_socket:/postgres_socket
     ports:
       - "8008:8000"
     environment:
       <<: *variables
     env_file:
-      - docker/dev/env/.env
+        # путь интерпретируется относительно местоположения самого файла docker-compose.yml
+        # ./docker/dev/env/.env == docker/dev/env/.env
+      - docker/dev/env/.env #  => папка_где_docker-compose.yml/docker/dev/env/.env
       - docker/dev/env/.db.env
       - docker/dev/env/.mailhog.env
       - docker/prod/env/.data.env
     depends_on: [db, redis]
-    restart: unless-stopped
+    restart: unless-stopped # при перегрузке сервера контейнер имеет то же состояние что и до
     networks:
       - microservice_network
       - separated_network

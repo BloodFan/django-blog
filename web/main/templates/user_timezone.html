@@ -4,8 +4,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="{% static 'js/admin_timezone.js'%}"></script>
 
-<script>
+{% comment %} <script>
     if (! getCookie("{{ timezone }}")){
        setTimeZone(csrf_token="{{ csrf_token }}", url="{% url 'set_user_timezone' %}")
     }
-</script>
+</script> {% endcomment %}

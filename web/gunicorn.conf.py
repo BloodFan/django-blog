@@ -1,7 +1,7 @@
 from multiprocessing import cpu_count
 from os import environ
 
-bind: list = ['unix:/gunicorn_socket/gunicorn.sock']
+bind: list = ['unix:/gunicorn_socket/gunicorn.sock', '0.0.0.0:9000']
 
 workers: int = int(environ.get('GUNICORN_WORKERS', cpu_count() * 2 + 1))
 
@@ -9,7 +9,7 @@ threads: int = int(environ.get('GUNICORN_THREADS', 1))
 
 worker_class: str = 'uvicorn.workers.UvicornWorker'
 
-loglevel: str = 'info'
+loglevel: str = 'DEBUG'
 
 reload: bool = bool(environ.get('GUNICORN_RELOAD', 0))
 

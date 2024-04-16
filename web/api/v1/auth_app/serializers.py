@@ -108,3 +108,23 @@ class PasswordResetConfirmSerializer(PasswordResetValidateSerializer):
         if data['password_1'] != data['password_2']:
             raise serializers.ValidationError({'password_2': error_messages['password_not_match']})
         return data
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
+class JWTSerializer(serializers.Serializer):
+
+    # user = UserSerializer()
+    access = serializers.CharField()
+    refresh = serializers.CharField()
+    # user = serializers.SerializerMethodField(read_only=True)
+
+    # def get_user(self, obj) -> dict:
+    #     user = self.context['user']
+    #     data = UserSerializer(user).data
+    #     return data

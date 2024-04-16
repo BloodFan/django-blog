@@ -36,7 +36,7 @@ class ChatUserAPIView(GenericAPIView):
         return ChatUserService().get_queryset(user_ids)
 
 
-class ValidateChatUserAPIView(GenericAPIView):
+class ValidateInitChatUserAPIView(GenericAPIView):
     serializer_class = ChatUserSerializer
     permission_classes = []
 
@@ -47,7 +47,7 @@ class ValidateChatUserAPIView(GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ValidateJWTAPIView(GenericAPIView):
+class UserDataByJWTAPIView(GenericAPIView):
     serializer_class = ValidateJWTSerializer
     permission_classes = [IsKeyInHeaders]
 
@@ -61,7 +61,7 @@ class ValidateJWTAPIView(GenericAPIView):
 
 class UserDataByIdAPIView(GenericAPIView):
     serializer_class = IdSerializer
-    permission_classes = [IsKeyInHeaders]
+    # permission_classes = [IsKeyInHeaders]
 
     def post(self, request):
         id_serializer = self.get_serializer(request.data)  # data from get_serializer(key) pass to swagger

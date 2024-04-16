@@ -8,7 +8,6 @@ from .additional_settings.summernote_settings import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-CHAT_URL = os.environ.get('CHAT_URL', 'http://127.0.0.1:8010')
 BLOG_HEADERS_PERMISSION = os.environ.get('BLOG_HEADERS_PERMISSION', 'owNV8NCVt0WuaCihX3Fy4kfV')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-b2sh!qk&=%azim-=s&=d1(-1upbq7H&-^-=tmPeHPLKXD')
@@ -40,8 +39,9 @@ INTERNAL_IPS: list[str] = []
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8008/')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8000/')
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'test@test.com')
+CHAT_URL = os.environ.get('CHAT_URL', 'http://127.0.0.1:8010')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 EMAIL_CONFIRMATION_EXPIRE_DAYS = 3 * 86400
