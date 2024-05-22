@@ -1,8 +1,12 @@
 $(function () {
     articleList()
     tagList()
-
 });
+
+$(window).scroll(function (){
+
+  console.log($('#articleList').height()-$(window).height(), $(window).scrollTop())
+})
 
 console.log('blog-list')
 
@@ -57,6 +61,12 @@ function articleTemplate (article) {
   const formatter = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const formattedDate = formatter.format(date);
   let tags = article.tags.map(tag=>tagTemplate(tag)).join('')
+  if (article.is_author == true) {
+    var edit_link = `<a class="btn btn-edit-article" href="${article.url}edit/">Edit article</a>`
+  }
+  else if (article.is_author == false) {
+    var edit_link = ''
+}
     return `
 <div class="row">
   <div class="col-md-12 post">
@@ -93,6 +103,7 @@ function articleTemplate (article) {
         </p>
         <p>
           <a class="btn btn-read-more" href="${article.url}">Read more</a>
+          ${edit_link}
         </p>
       </div>
     </div>
@@ -126,3 +137,4 @@ function updateQueryStringParameter(uri, key, value) {
 // ВТОРАЯ СТРОКА:
 // Метод indexOf() возвращает первый индекс, по которому данный элемент может быть найден в массиве или -1, если такого индекса нет.
 // тернарный оператор: если uri.indexOf('?') !== -1, то возвращается "&", иначе возвращается "?"
+

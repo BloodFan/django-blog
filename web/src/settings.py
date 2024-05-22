@@ -39,7 +39,7 @@ INTERNAL_IPS: list[str] = []
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8000/')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8010/')
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'test@test.com')
 CHAT_URL = os.environ.get('CHAT_URL', 'http://127.0.0.1:8010')
 

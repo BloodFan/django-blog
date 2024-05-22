@@ -1,0 +1,68 @@
+{% extends "blog/base.html" %}
+{% load static main %}
+
+{% block head %}
+<link href="{% static 'auth_app/css/sign_up.css' %}" rel="stylesheet">
+
+<!-- include summernote  -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+
+<!-- include select multiple tags -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
+<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.0/dist/js/multi-select-tag.js"></script>
+
+{% endblock head %}
+
+{% block container %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <form id="editBlog" action="r" method="post" accept-charset="utf-8" class="form" role="form">
+        <legend>Update your blog</legend>
+        <h4>It's free and always will be.</h4>
+        <div class="row">
+        <input type="text" id="title" name="title" value="" class="form-control input-lg" placeholder="title"/>
+        <textarea id="summernote" placeholder="Content" class="form-control" name="content" cols="40" rows="3"></textarea>
+        <br><br/>
+        <h4>Добавьте новый image(Игнорируйте, чтобы оставить старый image)</h4>
+        <input type='file' class="file-upload" >
+        <input type='hidden' name='image' id='image'>
+        <br><br/>
+        <select name="category" id="loadCategory"></select>
+        <br><br/>
+        <h4>Добавьте новые теги(Игнорируйте, чтобы оставить старые)</h4>
+        <select name="tags" class="loadTags" id="tags" multiple></select>
+        <br><br/>
+        <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit">Update your blog </button>
+      </form>
+    </div>
+  </div>
+{% endblock container %}
+
+
+{% block jquery %}
+$.getScript('{% static 'blog/js/post_edit.js' %}');
+$.getScript('{% static 'blog/js/includes/categories.js' %}');
+$.getScript('{% static 'blog/js/includes/tags.js' %}');
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script>
+    $('#summernote').summernote({
+      placeholder: 'Content',
+      tabsize: 2,
+      height: 120,
+      toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+      ]
+    });
+
+</script>
+{% endblock script %}

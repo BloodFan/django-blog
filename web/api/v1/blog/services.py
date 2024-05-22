@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.db.models import (Count, F, Prefetch, Q, OuterRef, Subquery,
                               ExpressionWrapper, IntegerField, Case,
-                              Value, When, CharField)
+                              Value, When, CharField, BooleanField)
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -39,7 +39,7 @@ class BlogService:
     def category_queryset() -> Category:
         return Category.objects.all()
 
-    def get_active_articles(self,) -> Article:
+    def get_active_articles(self, user: User) -> Article:
         return (
             Article.objects.filter(status=ArticleStatus.ACTIVE)
             .select_related('category', 'author')
@@ -50,8 +50,18 @@ class BlogService:
                 up_votes=self.annotate_votes_count(LikeStatus.LIKE),
                 down_votes=self.annotate_votes_count(LikeStatus.DISLIKE),
                 rating=ExpressionWrapper(F('up_votes')-F('down_votes'),
-                                         output_field=IntegerField())
+                                         output_field=IntegerField()),
+                is_author=self.is_author(user)
             )
+        )
+
+    def is_author(self, user: User) -> Value:
+        if not user.is_authenticated:
+            return Value(True, output_field=BooleanField())
+        return Case(
+            When(author=user, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField()
         )
 
     def like_annotate(self, user: User) -> Value:

@@ -20,6 +20,7 @@
 
     <link href="{% static 'profile/css/profile.css' %}" rel="stylesheet">
 
+
 {% endblock head %}
 
 
@@ -201,6 +202,7 @@
 {% endblock container %}
 
 {% block jquery %}
+    {% comment %} $.getScript('{% static 'profile/js/firebase-messaging-sw.js' %}'); {% endcomment %}
     $.getScript('{% static 'profile/js/base.js' %}');
     $.getScript('{% static 'profile/js/updatePassword.js' %}');
     $.getScript('{% static 'profile\js\modal.js' %}');

@@ -6,22 +6,25 @@ from . import serializers
 from .services import BlogService
 from main.pagination import BasePageNumberPagination
 from api.v1.blog.filters import ArticleFilter
+from .permissions import IsAuthorOrReadOnly
 
 
 class ArticleViewSet(ModelViewSet):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthorOrReadOnly, )
     pagination_class = BasePageNumberPagination
     filterset_class = ArticleFilter
     lookup_field = 'slug'
 
     def get_queryset(self):
-        return BlogService().get_active_articles()
+        return BlogService().get_active_articles(self.request.user)
 
     def get_serializer_class(self):
         if self.action == 'list':
             return serializers.ArticleSerializer
         elif self.action == 'create':
             return serializers.CreateArticleSerializer
+        elif self.action == 'partial_update':
+            return serializers.ArticteUpdateSerializer
         return serializers.FullArticleSerializer
 
     # вариант вывода комментов через action

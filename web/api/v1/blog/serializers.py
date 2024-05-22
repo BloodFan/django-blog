@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -7,7 +8,7 @@ from django.utils.text import slugify
 
 from transliterate import translit
 
-from blog.models import Article, Category, Comment, Tag
+from blog.models import Article, Category, Comment, Tag, TagArticle
 from .services import BlogService
 from actions.choices import ActionEvent, ActionMeta
 from api.v1.actions.services import ActionService
@@ -100,6 +101,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     up_votes = serializers.IntegerField()
     down_votes = serializers.IntegerField()
     rating = serializers.IntegerField()
+    is_author = serializers.BooleanField()
 
     class Meta:
         model = Article
@@ -118,6 +120,7 @@ class ArticleSerializer(serializers.ModelSerializer):
             'rating',
             'up_votes',
             'down_votes',
+            'is_author'
         )
 
 
@@ -181,3 +184,40 @@ class CreateArticleSerializer(serializers.ModelSerializer):
         service.send_message(article.author)
         service.send_message_for_admin(article.author, article)
         return article
+
+
+class ArticteUpdateSerializer(serializers.ModelSerializer):
+    image = serializers.CharField(allow_blank=True, allow_null=True)
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+                                              many=True)
+
+    class Meta:
+        model = Article
+        fields = (
+            'title',
+            'content',
+            'image',
+            'category',
+            'tags',
+        )
+
+    def validate_image(self, image: str):
+        if not image:
+            return self.instance.image
+        mime_type, raw_image = image.split(';base64,')
+        image = b64decode(raw_image)
+        extention = mime_type.split('/')[-1]
+        return ContentFile(image, f'name_image.{extention}')
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        print(f'{self.initial_data=}')
+
+        # tags_id = self.initial_data.getlist('tags', [])
+        # TagArticle.objects.filter(article=instance).delete()
+        # tags_list = []
+        # for tag_id in tags_id:
+        #     tag = Tag.objects.get(id=tag_id)
+        #     tags_list.append(TagArticle(article=instance, tag=tag))
+        # TagArticle.objects.bulk_create(tags_list)
+        return super().update(instance, validated_data)

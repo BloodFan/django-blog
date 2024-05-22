@@ -25,8 +25,10 @@ ARG UID=1000
 ARG USER=ubuntu
 ARG WHEELS_PATH=/etc/wheels
 
+ARG NGINX_BASIC_AUTH_LOGIN
+ARG NGINX_BASIC_AUTH_PASSWORD
 
-RUN apk add --update --no-cache --virtual .build-deps postgresql-dev curl nginx && \
+RUN apk add --update --no-cache postgresql-dev curl nginx && \
     addgroup -g $GID -S $USER && \
     adduser -S $USER -G $USER --uid "$UID" && \
     mkdir -p /gunicorn_socket /redis_socket && \
@@ -34,6 +36,12 @@ RUN apk add --update --no-cache --virtual .build-deps postgresql-dev curl nginx 
     chown -R $USER:$USER /gunicorn_socket
 
 WORKDIR $APP_HOME
+
+RUN apk add --virtual .build-deps apache2-utils
+# RUN if [ -n "${NGINX_BASIC_AUTH_LOGIN}" ] && [ -n "${NGINX_BASIC_AUTH_PASSWORD}" ]; then \
+#     htpasswd -bc /etc/nginx/.htpasswd "${NGINX_BASIC_AUTH_LOGIN}" "${NGINX_BASIC_AUTH_PASSWORD}"; fi
+RUN htpasswd -bc /etc/nginx/.htpasswd "${NGINX_BASIC_AUTH_LOGIN}" "${NGINX_BASIC_AUTH_PASSWORD}"
+RUN apk del .build-deps
 
 COPY --from=builder $WHEELS_PATH $WHEELS_PATH
 COPY ./web/setup.cfg ./web/pyproject.toml ./
