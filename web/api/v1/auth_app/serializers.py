@@ -24,9 +24,7 @@ class PasswordConfirmSerializer(serializers.Serializer):
 
     def validate_key(self, key: str) -> str:
         if len(key) == 0:
-            raise serializers.ValidationError(
-                'Error: Отсутствует или переименован key'
-            )
+            raise serializers.ValidationError('Error: Отсутствует или переименован key')
         return key
 
 
@@ -95,6 +93,7 @@ class PasswordResetValidateSerializer(serializers.Serializer):
 
 class PasswordResetConfirmSerializer(PasswordResetValidateSerializer):
     """Наследует от сериализатора валидации"""
+
     password_1 = serializers.CharField(min_length=8, max_length=64)
     password_2 = serializers.CharField(min_length=8, max_length=64)
 
@@ -111,14 +110,12 @@ class PasswordResetConfirmSerializer(PasswordResetValidateSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = '__all__'
 
 
 class JWTSerializer(serializers.Serializer):
-
     # user = UserSerializer()
     access = serializers.CharField()
     refresh = serializers.CharField()

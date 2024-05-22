@@ -8,10 +8,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from . import serializers
-from .services import (AuthAppService, PasswordResetService,
-                       PasswordResetToken, PasswordResetTokenConfirm,
-                       full_logout)
 from .addictional_service import LoginService
+from .services import AuthAppService, PasswordResetService, PasswordResetToken, PasswordResetTokenConfirm, full_logout
 
 User = get_user_model()
 
@@ -21,7 +19,6 @@ class ConfirmView(GenericAPIView):
     serializer_class = serializers.PasswordConfirmSerializer
 
     def post(self, request):
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

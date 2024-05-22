@@ -7,11 +7,10 @@ app_name = 'auth_app'
 
 
 urlpatterns = [
-
     path(
         'confirm_reset_password/',
         TemplateAPIView.as_view(template_name='auth_app/confirm_reset_password.html'),
-        name='confirm_reset_password'
+        name='confirm_reset_password',
     ),
     path('confirm/', TemplateAPIView.as_view(template_name='auth_app/confirm.html'), name='confirm'),
     path('login/', TemplateAPIView.as_view(template_name='auth_app/login.html'), name='login'),

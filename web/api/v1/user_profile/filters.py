@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
-from rest_framework.filters import BaseFilterBackend
+
 from rest_framework.exceptions import NotFound
+from rest_framework.filters import BaseFilterBackend
 
 from main.models import User
 

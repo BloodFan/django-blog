@@ -1,16 +1,17 @@
-from rest_framework.viewsets import ModelViewSet
 from django.utils.translation import gettext_lazy as _
 from rest_framework.permissions import AllowAny
+from rest_framework.viewsets import ModelViewSet
+
+from api.v1.blog.filters import ArticleFilter
 
 from . import serializers
+from .permissions import IsAuthorOrReadOnly
 from .services import BlogService
 from main.pagination import BasePageNumberPagination
-from api.v1.blog.filters import ArticleFilter
-from .permissions import IsAuthorOrReadOnly
 
 
 class ArticleViewSet(ModelViewSet):
-    permission_classes = (IsAuthorOrReadOnly, )
+    permission_classes = (IsAuthorOrReadOnly,)
     pagination_class = BasePageNumberPagination
     filterset_class = ArticleFilter
     lookup_field = 'slug'
@@ -66,8 +67,7 @@ class CommentViewSet(ModelViewSet):
     permission_classes = (AllowAny,)
 
     def get_queryset(self):
-        return BlogService().comment_queryset(self.kwargs['slug'],
-                                              self.request.user)
+        return BlogService().comment_queryset(self.kwargs['slug'], self.request.user)
 
     def get_serializer_class(self):
         if self.action == 'list':

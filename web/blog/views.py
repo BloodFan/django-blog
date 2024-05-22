@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 # ВСЕ ЗДЕСЬ НЕ ИСПОЛЬЗУЕТСЯ, ОТСТАВИЛ ИЗ-ЗА СТРОЧКИ ЛОГГЕРА
 
+
 class ViewSet(ModelViewSet):
     http_method_names = ('get', 'post', 'put', 'delete')
     lookup_field = 'slug'

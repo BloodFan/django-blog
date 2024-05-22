@@ -1,14 +1,14 @@
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse_lazy
-from django.contrib.contenttypes.fields import GenericRelation
-
 from transliterate import translit
 
-from .choices import ArticleStatus
 from actions.models import Like
+
+from .choices import ArticleStatus
 
 User = get_user_model()
 
@@ -120,28 +120,15 @@ class Tag(models.Model):
 
 
 class TagArticle(models.Model):
-    tag = models.ForeignKey(
-        Tag,
-        on_delete=models.CASCADE,
-        related_name='tagarticles',
-        verbose_name='tag'
-    )
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='tagarticles', verbose_name='tag')
 
-    article = models.ForeignKey(
-        Article,
-        on_delete=models.CASCADE,
-        related_name='tagarticles',
-        verbose_name='article'
-    )
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='tagarticles', verbose_name='article')
 
     class Meta:
         ordering = ('-id',)
         verbose_name = 'article tag'
         verbose_name_plural = 'article tags'
-        constraints = [
-            models.UniqueConstraint(fields=['article', 'tag'],
-                                    name='unique_tag_in_article')
-        ]
+        constraints = [models.UniqueConstraint(fields=['article', 'tag'], name='unique_tag_in_article')]
 
     def __str__(self) -> str:
         return f'{self.tag} for {self.article}.'

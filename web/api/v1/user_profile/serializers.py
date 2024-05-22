@@ -1,15 +1,15 @@
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
 from base64 import b64decode
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
 
 User = get_user_model()
 
 error_messages = {
     'password_not_match': _('The two password fields did not match'),
-
 }
 
 
@@ -38,7 +38,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UpdateProfileSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = (

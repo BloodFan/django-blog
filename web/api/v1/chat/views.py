@@ -4,18 +4,16 @@ GET /api/v1/chat/users?user_ids=2,3,4
 POST /api/v1/chat/users; {'users': [2,3,4]}
  '''
 
-from django.contrib.auth import get_user_model
 from django.conf import settings
-from rest_framework.generics import GenericAPIView
-from rest_framework.exceptions import NotFound
-from rest_framework.response import Response
+from django.contrib.auth import get_user_model
 from rest_framework import status
+from rest_framework.exceptions import NotFound
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 
-from .serializers import (ChatUserSerializer,
-                          ValidateJWTSerializer,
-                          IdSerializer)
-from .services import ChatUserService
 from .permissions import IsKeyInHeaders
+from .serializers import ChatUserSerializer, IdSerializer, ValidateJWTSerializer
+from .services import ChatUserService
 
 User = get_user_model()
 

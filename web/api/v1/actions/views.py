@@ -1,15 +1,18 @@
+from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework import status
 
-from .serializers import (LikeSerializer, FollowingCreateSerializer,
-                          FollowingSerializer, ActionSerializer,
-                          ActionUsersCreateSerializer)
-from .services import (LikeService, FollowingService,
-                       FollowingListService, ActionQueryset,
-                       ActionUsersService)
 from actions.models import Like
+
 from ..user_profile.filters import SubscriptionFilter
+from .serializers import (
+    ActionSerializer,
+    ActionUsersCreateSerializer,
+    FollowingCreateSerializer,
+    FollowingSerializer,
+    LikeSerializer,
+)
+from .services import ActionQueryset, ActionUsersService, FollowingListService, FollowingService, LikeService
 
 
 class LikeApiView(GenericAPIView):
@@ -24,9 +27,9 @@ class LikeApiView(GenericAPIView):
             {
                 'status': data['status'],
                 'model': data['model'],
-                'object_id': data['object_id']
+                'object_id': data['object_id'],
             },
-            status=data['status_code']
+            status=data['status_code'],
         )
 
     def get(self, request):
@@ -36,7 +39,6 @@ class LikeApiView(GenericAPIView):
 
 
 class FollowingApiView(GenericAPIView):
-
     serializer_class = FollowingCreateSerializer
 
     def post(self, request):
@@ -76,8 +78,5 @@ class ActionUsersAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         service = ActionUsersService()
-        service.create_actionusers_relation(
-            user=request.user,
-            action_id=serializer.data['id']
-        )
+        service.create_actionusers_relation(user=request.user, action_id=serializer.data['id'])
         return Response(status=status.HTTP_201_CREATED)

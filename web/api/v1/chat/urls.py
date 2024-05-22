@@ -1,7 +1,6 @@
 from django.urls import path
 
-from .views import (ChatUserAPIView, ValidateInitChatUserAPIView,
-                    UserDataByJWTAPIView, UserDataByIdAPIView)
+from .views import ChatUserAPIView, UserDataByIdAPIView, UserDataByJWTAPIView, ValidateInitChatUserAPIView
 
 app_name = 'chat'
 

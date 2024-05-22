@@ -26,7 +26,6 @@ def send_information_email(
     context: dict,
     letter_language: str = 'en',
     **kwargs: Optional[Any],
-
 ) -> bool:
     """
     :param subject: email subject
@@ -45,7 +44,7 @@ def send_information_email(
         bcc=kwargs.get('bcc'),
         cc=kwargs.get('cc'),
         reply_to=kwargs.get('reply_to'),
-        connection=kwargs.get('connection')
+        connection=kwargs.get('connection'),
     )
     html_email: str = loader.render_to_string(template_name, context)
     email_message.attach_alternative(html_email, 'text/html')

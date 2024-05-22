@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
-from actions.models import Like, Action, ActionUsers
-from .services import LikeObjectsChoices
+from actions.models import Action, ActionUsers, Like
 from blog.models import Article, Comment
+
+from .services import LikeObjectsChoices
 from main.models import User
 
 
@@ -12,11 +13,7 @@ class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
-        fields = (
-            'vote',
-            'object_id',
-            'model'
-        )
+        fields = ('vote', 'object_id', 'model')
 
 
 class FollowingCreateSerializer(serializers.Serializer):
@@ -43,6 +40,7 @@ class FollowingSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     """Предназначен для ActionSerializer"""
+
     url = serializers.CharField(source='get_absolute_url')
 
     class Meta:
@@ -57,31 +55,25 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
     """Предназначен для ActionSerializer"""
+
     url = serializers.CharField(source='get_absolute_url')
     type = serializers.CharField(default='article', read_only=True)
 
     class Meta:
         model = Article
-        fields = (
-            'title',
-            'url',
-            'type'
-        )
+        fields = ('title', 'url', 'type')
 
 
 class CommentSerializer(serializers.ModelSerializer):
     """Предназначен для ActionSerializer"""
+
     title = serializers.CharField(source='article.title')
     url = serializers.CharField(source='article.get_absolute_url')
     type = serializers.CharField(default='comment', read_only=True)
 
     class Meta:
         model = Comment
-        fields = (
-            'title',
-            'url',
-            'type'
-        )
+        fields = ('title', 'url', 'type')
 
 
 class ActionSerializer(serializers.ModelSerializer):
@@ -112,4 +104,4 @@ class ActionUsersCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActionUsers
-        fields = ('id', )
+        fields = ('id',)

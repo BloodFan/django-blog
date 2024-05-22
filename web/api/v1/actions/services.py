@@ -1,14 +1,16 @@
-from django.db.models import TextChoices, QuerySet, OuterRef, Exists, Q
-from django.contrib.contenttypes.models import ContentType
-from rest_framework import status
-from rest_framework.exceptions import NotFound, ValidationError
 from typing import Union
 
-from main.models import UserType, User
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Exists, OuterRef, Q, QuerySet, TextChoices
+from rest_framework import status
+from rest_framework.exceptions import NotFound, ValidationError
+
+from actions.choices import ActionEvent, ActionMeta, FollowingStatus, LikeStatus
+from actions.models import Action, ActionUsers, Following, Like
 from blog.models import Article, Comment
-from actions.models import Like, Following, Action, ActionUsers
-from actions.choices import LikeStatus, FollowingStatus, ActionEvent, ActionMeta
+
 from ..user_profile.services import UserProfileService
+from main.models import User, UserType
 
 
 class LikeObjectsChoices(TextChoices):
@@ -17,13 +19,7 @@ class LikeObjectsChoices(TextChoices):
 
 
 class LikeService:
-    def __init__(
-            self,
-            object_id: int,
-            vote: Like.Vote,
-            user: UserType,
-            model: LikeObjectsChoices
-    ) -> None:
+    def __init__(self, object_id: int, vote: Like.Vote, user: UserType, model: LikeObjectsChoices) -> None:
         self.object_id = object_id
         self.vote = vote
         self.user = user
@@ -57,7 +53,7 @@ class LikeService:
                     'status': LikeStatus.DOES_NOT_EXIST,
                     'model': self.model,
                     'object_id': self.object_id,
-                    'status_code': status.HTTP_200_OK
+                    'status_code': status.HTTP_200_OK,
                 }
             case Like() as like if (like.vote != self.vote):
                 like = self.update_like(like)
@@ -65,7 +61,7 @@ class LikeService:
                     'status': like.vote,
                     'model': self.model,
                     'object_id': self.object_id,
-                    'status_code': status.HTTP_200_OK
+                    'status_code': status.HTTP_200_OK,
                 }
             case _:
                 like = self.create_like()
@@ -73,15 +69,13 @@ class LikeService:
                     'status': like.vote,
                     'model': self.model,
                     'object_id': self.object_id,
-                    'status_code': status.HTTP_201_CREATED
+                    'status_code': status.HTTP_201_CREATED,
                 }
 
     def delete_like(self, like: Like) -> None:
         event = ActionService.get_event_type(self.instance)
         ActionService(
-            event=event,
-            user=self.user,
-            content_object=self.instance
+            event=event, user=self.user, content_object=self.instance
         ).delete_action()  # лента новостей(удаление)
         like.delete()
 
@@ -121,7 +115,9 @@ class FollowingService:
     def delete_following(self):
         Following.objects.filter(user=self.user, author_id=self.user_id).delete()
 
-    def is_following(self,) -> bool:
+    def is_following(
+        self,
+    ) -> bool:
         return Following.objects.filter(user=self.user, author_id=self.user_id).exists()
 
     def validate_subscription(self):
@@ -130,7 +126,6 @@ class FollowingService:
 
 
 class FollowingListService:
-
     def __init__(self, user: User):
         self.user = user
 
@@ -156,18 +151,12 @@ class ActionService:
         content_type = ContentType.objects.get_for_model(self.content_object)
         object_id = self.content_object.id
         return Action.objects.filter(
-            event=self.event,
-            user=self.user,
-            content_type=content_type,
-            object_id=object_id
+            event=self.event, user=self.user, content_type=content_type, object_id=object_id
         ).exists()
 
     def create_action(self) -> Action:
         return Action.objects.create(
-            event=self.event,
-            user=self.user,
-            content_object=self.content_object,
-            meta=self.meta or {}
+            event=self.event, user=self.user, content_object=self.content_object, meta=self.meta or {}
         )
 
     def delete_action(self):
@@ -175,10 +164,7 @@ class ActionService:
             content_type = ContentType.objects.get_for_model(self.content_object)
             object_id = self.content_object.id
             Action.objects.get(
-                event=self.event,
-                user=self.user,
-                content_type=content_type,
-                object_id=object_id
+                event=self.event, user=self.user, content_type=content_type, object_id=object_id
             ).delete()
 
     @staticmethod
@@ -192,9 +178,15 @@ class ActionService:
 
 class ActionQueryset:
     def get_queryset(self, user: User) -> QuerySet[Action]:
-        return Action.objects.select_related('user').prefetch_related('content_object').annotate(
-            is_follower=Exists(Following.objects.filter(user=user, author=OuterRef('user_id'))),
-        ).filter(Q(is_follower=True) & ~Q(actionusers__user=user)).all()
+        return (
+            Action.objects.select_related('user')
+            .prefetch_related('content_object')
+            .annotate(
+                is_follower=Exists(Following.objects.filter(user=user, author=OuterRef('user_id'))),
+            )
+            .filter(Q(is_follower=True) & ~Q(actionusers__user=user))
+            .all()
+        )
 
         # Альтернатива
         # return Action.objects.select_related('user').prefetch_related('content_object').annotate(
@@ -204,7 +196,6 @@ class ActionQueryset:
 
 
 class ActionUsersService:
-
     def create_actionusers_relation(self, user: User, action_id: int) -> ActionUsers:
         '''Ознакомление пользователя с новостью.'''
         return ActionUsers.objects.create(user=user, action_id=action_id)

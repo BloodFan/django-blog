@@ -114,13 +114,9 @@ class AuthAppService:
         response = ConfirmEmail(**validated_data)
         key = response.key
         try:
-            user_id = signing.loads(
-                key, max_age=settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
-            )
+            user_id = signing.loads(key, max_age=settings.EMAIL_CONFIRMATION_EXPIRE_DAYS)
             user = User.objects.get(id=user_id)
-        except (signing.BadSignature,
-                signing.SignatureExpired,
-                User.DoesNotExist):
+        except (signing.BadSignature, signing.SignatureExpired, User.DoesNotExist):
             raise ValidationError('Error: invalid confirmation key')
         return user
 
@@ -133,21 +129,15 @@ class AuthAppService:
     def send_message(user: User):
         template_name = 'emails/confirmation.html'
         user_id = user.confirmation_key
-        context = {'user_id': user_id,
-                   'full_name': user.full_name,
-                   'frontend_url': settings.FRONTEND_URL}
+        context = {'user_id': user_id, 'full_name': user.full_name, 'frontend_url': settings.FRONTEND_URL}
         subject = 'Добро пожаловать!'
 
         tasks.send_information_email.delay(
-            subject=subject,
-            template_name=template_name,
-            context=context,
-            to_email=user.email
+            subject=subject, template_name=template_name, context=context, to_email=user.email
         )
 
 
 class PasswordResetService:
-
     def get_user(self, email: str) -> Optional[User]:
         try:
             return User.objects.get(email=email)
@@ -170,17 +160,12 @@ class PasswordResetService:
         template_name = 'emails/reset_password.html'
         context = {
             'full_name': user.full_name,
-            'url':
-                f'{settings.FRONTEND_URL}confirm_reset_password/'
-                f'?token={tokens.token}&uid={tokens.uid}'
+            'url': f'{settings.FRONTEND_URL}confirm_reset_password/' f'?token={tokens.token}&uid={tokens.uid}',
         }
         subject = 'Восстановление пароля, проект django-blog.'
 
         tasks.send_information_email.delay(
-            subject=subject,
-            template_name=template_name,
-            context=context,
-            to_email=user.email
+            subject=subject, template_name=template_name, context=context, to_email=user.email
         )
 
     def decode_token_and_uid(self, data: NamedTuple) -> User:

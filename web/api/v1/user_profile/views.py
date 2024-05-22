@@ -1,22 +1,26 @@
 from django.contrib.auth import get_user_model
+from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework import status
 
-from api.v1.actions.services import ActionService
 from actions.choices import ActionEvent, ActionMeta
+from api.v1.actions.services import ActionService
+
+from .serializers import (
+    ChangePasswordSerializer,
+    ProfileSerializer,
+    UpdateImageSerializer,
+    UpdateProfileSerializer,
+    UsersListSerializer,
+)
 from .services import UserProfileService
-from .serializers import (ProfileSerializer,
-                          UpdateProfileSerializer,
-                          UpdateImageSerializer,
-                          ChangePasswordSerializer,
-                          UsersListSerializer)
 
 User = get_user_model()
 
 
 class ProfileAPIView(GenericAPIView):
     '''Собственный профайл пользователя.'''
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return ProfileSerializer
@@ -56,13 +60,14 @@ class UpdateImageAPIView(GenericAPIView):
             event=ActionEvent.UPDATE_AVATAR,
             user=request.user,
             content_object=request.user,
-            meta=ActionMeta[ActionEvent.UPDATE_AVATAR](str(request.user.image))
+            meta=ActionMeta[ActionEvent.UPDATE_AVATAR](str(request.user.image)),
         ).create_action()  # лента новостей
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserProfile(GenericAPIView):
     '''Профайл пользователя.'''
+
     lookup_field = 'id'
     serializer_class = ProfileSerializer
 

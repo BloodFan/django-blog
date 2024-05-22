@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
-from django_summernote.admin import SummernoteModelAdmin
 from django.http import HttpResponseRedirect
+from django_summernote.admin import SummernoteModelAdmin
 
 from .models import Article, Category, Comment, Tag, TagArticle
 
@@ -15,11 +15,21 @@ class TagInline(admin.TabularInline):
 class ArticleAdmin(SummernoteModelAdmin):
     list_display = ('title', 'category', 'status', 'author')
     summernote_fields = ('content',)
-    fields = ('category', 'title', 'status', 'author', 'image', 'content', 'slug', 'created', 'updated',)
+    fields = (
+        'category',
+        'title',
+        'status',
+        'author',
+        'image',
+        'content',
+        'slug',
+        'created',
+        'updated',
+    )
     readonly_fields = ('created', 'updated')
     list_select_related = ('category', 'author')
     list_filter = ('status',)
-    inlines = (TagInline, )
+    inlines = (TagInline,)
     change_form_template = "admin/article/article_changeform.html"
 
     def response_change(self, request, obj):

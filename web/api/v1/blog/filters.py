@@ -1,8 +1,9 @@
-from django.db.models import Q, QuerySet, F
+from django.db.models import F, Q, QuerySet
 from django_filters import rest_framework as filters
 
-from main.filters import ListCharFilter
 from blog.models import Article, Tag
+
+from main.filters import ListCharFilter
 
 
 class ArticleFilter(filters.FilterSet):

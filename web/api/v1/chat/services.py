@@ -1,9 +1,10 @@
 from typing import TypedDict
+
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
-from rest_framework.exceptions import ValidationError, NotFound
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import AccessToken
 
 from main.models import UserType
 
@@ -16,7 +17,6 @@ class RequestDataT(TypedDict):
 
 
 class ChatUserService:
-
     def get_queryset(self, user_ids: str) -> QuerySet[User]:
         users_list = user_ids.split(',')
         return User.objects.filter(id__in=users_list).all()

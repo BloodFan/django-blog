@@ -1,6 +1,7 @@
-from django.utils.translation import gettext_lazy as _
-from django.db.models import IntegerChoices, TextChoices
 from enum import Enum
+
+from django.db.models import IntegerChoices, TextChoices
+from django.utils.translation import gettext_lazy as _
 
 
 class LikeStatus(IntegerChoices):
@@ -24,12 +25,10 @@ class ActionEvent(TextChoices):
 
 class MetaTemplate:
     '''Шаблоны для ActionMeta(JSONField)'''
+
     @staticmethod
     def update_avatar_template(image: str) -> dict:
-        return {
-            'type': 'update_avatar',
-            'image': f'/media/{image}'
-        }
+        return {'type': 'update_avatar', 'image': f'/media/{image}'}
 
     @staticmethod
     def create_comment_template():

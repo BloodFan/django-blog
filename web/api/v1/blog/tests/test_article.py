@@ -1,21 +1,22 @@
 import re
 
 import pytest
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
-from django.conf import settings
 
-from blog.models import Article
 from blog.choices import ArticleStatus
+from blog.models import Article
 
-pytestmark = [pytest.mark.django_db,]
+pytestmark = [
+    pytest.mark.django_db,
+]
 User = get_user_model()
 email_settings = override_settings(
-        EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
-        CELERY_TASK_ALWAYS_EAGER=True
+    EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend', CELERY_TASK_ALWAYS_EAGER=True
 )
 
 
@@ -29,7 +30,7 @@ def test_create_article(auth_client, category, tags, admin_client):
         'content': 'Абсолютно все, что угодно!',
         'image': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=',
         'category': 1,
-        'tags': [1, 2]
+        'tags': [1, 2],
     }
     response = auth_client.post(
         path=reverse('api:v1:blog:articles-list'),
@@ -64,7 +65,7 @@ def test_create_article(auth_client, category, tags, admin_client):
     response = admin_client.post(
         # path=f'/admin/blog/article/{id}/change/',
         path=reverse(f'admin:{article._meta.app_label}_{type(article).__name__.lower()}_change', args=(id,)),
-        data={'_make-active': 'Make Active'}  # status article не обновляется
+        data={'_make-active': 'Make Active'},  # status article не обновляется
     )
     # article._meta.app_label название приложение модели - blog
     # type(article).__name__.lower() название модели - article

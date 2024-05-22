@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Like, Action, ActionUsers
+from .models import Action, ActionUsers, Like
 
 
 @admin.register(ActionUsers)

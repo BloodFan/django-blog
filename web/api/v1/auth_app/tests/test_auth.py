@@ -7,11 +7,12 @@ from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
 
-pytestmark = [pytest.mark.django_db,]
+pytestmark = [
+    pytest.mark.django_db,
+]
 User = get_user_model()
 email_settings = override_settings(
-        EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
-        CELERY_TASK_ALWAYS_EAGER=True
+    EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend', CELERY_TASK_ALWAYS_EAGER=True
 )
 
 
@@ -25,7 +26,7 @@ def test_register_user(client):
         'password_1': 'test_password3210',
         'password_2': 'test_password3210',
         'birthday': '2000-01-01',
-        'gender': '1'
+        'gender': '1',
     }
 
     response = client.post(
@@ -86,45 +87,38 @@ def test_register_user(client):
 
 
 @pytest.mark.parametrize(
-    'payload, expected_status', (
-        ({'email': 'test_email@mail.com', 'password': 'test_password3210'},
-         status.HTTP_200_OK),
-        ({'email': 'test_email@mail.com', 'password': 'test_password'},
-         status.HTTP_400_BAD_REQUEST),  # password does not match fixture
-        ({'email': 'test_email_2@mail.com', 'password': 'test_password3210'},
-         status.HTTP_400_BAD_REQUEST),  # email does not match fixture
-    )
+    'payload, expected_status',
+    (
+        ({'email': 'test_email@mail.com', 'password': 'test_password3210'}, status.HTTP_200_OK),
+        (
+            {'email': 'test_email@mail.com', 'password': 'test_password'},
+            status.HTTP_400_BAD_REQUEST,
+        ),  # password does not match fixture
+        (
+            {'email': 'test_email_2@mail.com', 'password': 'test_password3210'},
+            status.HTTP_400_BAD_REQUEST,
+        ),  # email does not match fixture
+    ),
 )
 def test_login_user(client, user, payload, expected_status):
     """test authentication procedure"""
-    response = client.post(
-        path=reverse('api:v1:auth_app:sign-in'),
-        data=payload,
-        follow=True
-    )
+    response = client.post(path=reverse('api:v1:auth_app:sign-in'), data=payload, follow=True)
     assert response.status_code == expected_status
 
 
 @pytest.mark.parametrize(
-    'payload, expected_status', (
-        ({'email': 'test_password@mail.com', 'password': 'test_password3210'},
-         status.HTTP_400_BAD_REQUEST),
-        ({'email': 'test_password@mail.com', 'password': 'test_password'},
-         status.HTTP_400_BAD_REQUEST),  # password does not match fixture
-    )
+    'payload, expected_status',
+    (
+        ({'email': 'test_password@mail.com', 'password': 'test_password3210'}, status.HTTP_400_BAD_REQUEST),
+        (
+            {'email': 'test_password@mail.com', 'password': 'test_password'},
+            status.HTTP_400_BAD_REQUEST,
+        ),  # password does not match fixture
+    ),
 )
-def test_login_inactive_user(
-    client,
-    user_inactive,
-    payload,
-    expected_status
-):
+def test_login_inactive_user(client, user_inactive, payload, expected_status):
     """test authentication procedure with inactive_user"""
-    response = client.post(
-        path=reverse('api:v1:auth_app:sign-in'),
-        data=payload,
-        follow=True
-    )
+    response = client.post(path=reverse('api:v1:auth_app:sign-in'), data=payload, follow=True)
     assert response.status_code == expected_status
 
 
@@ -132,66 +126,85 @@ def test_login_inactive_user(
 # Аутентификации - процедура проверки подлинности
 # Авторизация - предоставление  прав на выполнение определенных действий
 
+
 @pytest.mark.parametrize(
-    'payload, expected_status', (
-        ({
-            'first_name': 'Lion',
-            'last_name': 'El jonson',
-            'email': 'Dark_Angel@mail.com',
-            'password_1': 'test_password3210',
-            'password_2': 'test_password3210',
-            'birthday': '2000-01-01',
-            'gender': '1'
-        }, status.HTTP_201_CREATED),
-        ({
-            'first_name': '',
-            'last_name': 'El jonson',
-            'email': 'Dark_Angel@mail.com',
-            'password_1': 'test_password3210',
-            'password_2': 'test_password3210'
-        }, status.HTTP_400_BAD_REQUEST),  # without first_name
-        ({
-            'first_name': 'Lion',
-            'last_name': '',
-            'email': 'Dark_Angel@mail.com',
-            'password_1': 'test_password3210',
-            'password_2': 'test_password3210'
-        }, status.HTTP_400_BAD_REQUEST),  # without last_name
-        ({
-            'first_name': 'Lion',
-            'last_name': 'El jonson',
-            'email': '',
-            'password_1': 'test_password3210',
-            'password_2': 'test_password3210'
-        }, status.HTTP_400_BAD_REQUEST),  # without email
-        ({
-            'first_name': 'Lion',
-            'last_name': 'El jonson',
-            'email': 'Dark_Angel@mail.com',
-            'password_1': '',
-            'password_2': 'test_password3210'
-        }, status.HTTP_400_BAD_REQUEST),  # without password_1
-        ({
-            'first_name': 'Lion',
-            'last_name': 'El jonson',
-            'email': 'Dark_Angel@mail.com',
-            'password_1': 'test_password3210',
-            'password_2': ''
-        }, status.HTTP_400_BAD_REQUEST),  # without password_2
-        ({
-            'first_name': 'Lion',
-            'last_name': 'El jonson',
-            'email': 'Dark_Angel@mail.com',
-            'password_1': 'test_password3210',
-            'password_2': 'test_password'
-        }, status.HTTP_400_BAD_REQUEST),  # different passwords
-    )
+    'payload, expected_status',
+    (
+        (
+            {
+                'first_name': 'Lion',
+                'last_name': 'El jonson',
+                'email': 'Dark_Angel@mail.com',
+                'password_1': 'test_password3210',
+                'password_2': 'test_password3210',
+                'birthday': '2000-01-01',
+                'gender': '1',
+            },
+            status.HTTP_201_CREATED,
+        ),
+        (
+            {
+                'first_name': '',
+                'last_name': 'El jonson',
+                'email': 'Dark_Angel@mail.com',
+                'password_1': 'test_password3210',
+                'password_2': 'test_password3210',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        ),  # without first_name
+        (
+            {
+                'first_name': 'Lion',
+                'last_name': '',
+                'email': 'Dark_Angel@mail.com',
+                'password_1': 'test_password3210',
+                'password_2': 'test_password3210',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        ),  # without last_name
+        (
+            {
+                'first_name': 'Lion',
+                'last_name': 'El jonson',
+                'email': '',
+                'password_1': 'test_password3210',
+                'password_2': 'test_password3210',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        ),  # without email
+        (
+            {
+                'first_name': 'Lion',
+                'last_name': 'El jonson',
+                'email': 'Dark_Angel@mail.com',
+                'password_1': '',
+                'password_2': 'test_password3210',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        ),  # without password_1
+        (
+            {
+                'first_name': 'Lion',
+                'last_name': 'El jonson',
+                'email': 'Dark_Angel@mail.com',
+                'password_1': 'test_password3210',
+                'password_2': '',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        ),  # without password_2
+        (
+            {
+                'first_name': 'Lion',
+                'last_name': 'El jonson',
+                'email': 'Dark_Angel@mail.com',
+                'password_1': 'test_password3210',
+                'password_2': 'test_password',
+            },
+            status.HTTP_400_BAD_REQUEST,
+        ),  # different passwords
+    ),
 )
 def test_sign_up(client, user, payload, expected_status):
     """test authentication procedure"""
-    response = client.post(
-        path=reverse('api:v1:auth_app:sign-up'),
-        data=payload,
-        follow=True
-    )
+    response = client.post(path=reverse('api:v1:auth_app:sign-up'), data=payload, follow=True)
     assert response.status_code == expected_status

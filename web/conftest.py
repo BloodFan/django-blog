@@ -1,9 +1,9 @@
 import pytest
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.test.client import Client
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from blog.models import Category, Tag, Article
+from blog.models import Article, Category, Tag
 
 pyteststmark = [pytest.mark.django_db]
 
@@ -45,18 +45,15 @@ def auth_client(user):
 @pytest.fixture
 def category() -> Category:
     """Создание категории для тестирования."""
-    return Category.objects.create(
-        name='category_for_testing',
-        slug='test_category'
-    )
+    return Category.objects.create(name='category_for_testing', slug='test_category')
 
 
 @pytest.fixture
 def tags() -> Tag:
     """Создание тегов для тестирования."""
     tags_list = [
-       Tag(name='Tag_for_testing_1', slug='test_Tag_1'),
-       Tag(name='Tag_for_testing_2', slug='test_Tag_2'),
+        Tag(name='Tag_for_testing_1', slug='test_Tag_1'),
+        Tag(name='Tag_for_testing_2', slug='test_Tag_2'),
     ]
     return Tag.objects.bulk_create(tags_list)
 

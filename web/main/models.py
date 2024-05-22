@@ -6,8 +6,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse_lazy
 
-from .managers import UserManager
 from .choices import UserGenderStatus
+from .managers import UserManager
 
 UserType = TypeVar('UserType', bound='User')
 
@@ -18,7 +18,9 @@ class User(AbstractUser):
     birthday = models.DateField(null=True, blank=True)
     gender = models.PositiveSmallIntegerField(choices=UserGenderStatus.choices, default=UserGenderStatus.NOT_KHOWN)
     image = models.ImageField(upload_to='avatars/', blank=True, null=True, default='no-image-available.jpg')
-    following = models.ManyToManyField(to='self', through='actions.Following', related_name='followers', symmetrical=False)
+    following = models.ManyToManyField(
+        to='self', through='actions.Following', related_name='followers', symmetrical=False
+    )
 
     USERNAME_FIELD: str = 'email'
     REQUIRED_FIELDS: list[str] = []

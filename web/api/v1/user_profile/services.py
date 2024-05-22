@@ -1,12 +1,13 @@
 from typing import TYPE_CHECKING
-from django.db.models import Count, OuterRef, Subquery, Q, QuerySet, Exists
+
 from django.contrib.auth import get_user_model
+from django.db.models import Count, Exists, OuterRef, Q, QuerySet, Subquery
 from django.db.models.functions import Coalesce
 from rest_framework import status
 from rest_framework.exceptions import NotFound
 
-from blog.choices import ArticleStatus
 from actions.models import Following
+from blog.choices import ArticleStatus
 
 if TYPE_CHECKING:
     from main.models import UserType
@@ -45,16 +46,18 @@ class UserProfileService:
                 return Coalesce(
                     Subquery(
                         User.objects.filter(id=OuterRef('id'))
-                        .annotate(count=Count(
-                            related_name,
-                            filter=Q(article_set__status=ArticleStatus.ACTIVE)
-                        )).values('count')[:1]), 0)
+                        .annotate(count=Count(related_name, filter=Q(article_set__status=ArticleStatus.ACTIVE)))
+                        .values('count')[:1]
+                    ),
+                    0,
+                )
             case _:
                 return Coalesce(
                     Subquery(
-                        User.objects.filter(id=OuterRef('id'))
-                        .annotate(count=Count(related_name))
-                        .values('count')[:1]), 0)
+                        User.objects.filter(id=OuterRef('id')).annotate(count=Count(related_name)).values('count')[:1]
+                    ),
+                    0,
+                )
 
     @staticmethod
     def change_password(data: dict, user: User) -> dict:

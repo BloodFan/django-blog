@@ -1,17 +1,18 @@
-from django.db import transaction
+from base64 import b64decode
+
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
+from django.db import transaction
+from django.utils.text import slugify
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from base64 import b64decode
-from django.core.files.base import ContentFile
-from django.utils.text import slugify
-
 from transliterate import translit
 
-from blog.models import Article, Category, Comment, Tag, TagArticle
-from .services import BlogService
 from actions.choices import ActionEvent, ActionMeta
 from api.v1.actions.services import ActionService
+from blog.models import Article, Category, Comment, Tag, TagArticle
+
+from .services import BlogService
 
 User = get_user_model()
 
@@ -40,7 +41,15 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'content', 'updated', 'parent', 'children', 'user_like_status',)
+        fields = (
+            'id',
+            'user',
+            'content',
+            'updated',
+            'parent',
+            'children',
+            'user_like_status',
+        )
 
     # def get_user_like_status(self, obj: Comment) -> int:
     #     user = self.context['request'].user
@@ -77,6 +86,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
 class TagSerializer(serializers.ModelSerializer):
     """Теги"""
+
     url = serializers.CharField(source='get_absolute_url')
 
     class Meta:
@@ -120,7 +130,7 @@ class ArticleSerializer(serializers.ModelSerializer):
             'rating',
             'up_votes',
             'down_votes',
-            'is_author'
+            'is_author',
         )
 
 
@@ -131,9 +141,7 @@ class FullArticleSerializer(ArticleSerializer):
         fields = ArticleSerializer.Meta.fields + ('user_like_status',)
 
     def to_representation(self, instance):
-        representation = super(
-            FullArticleSerializer, self
-        ).to_representation(instance)
+        representation = super(FullArticleSerializer, self).to_representation(instance)
         representation['created'] = instance.created.strftime('%d/%m/%Y')
         return representation
 
@@ -145,19 +153,11 @@ class FullArticleSerializer(ArticleSerializer):
 class CreateArticleSerializer(serializers.ModelSerializer):
     image = serializers.CharField()
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                              many=True)
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
 
     class Meta:
         model = Article
-        fields = (
-            'author',
-            'title',
-            'category',
-            'content',
-            'image',
-            'tags'
-        )
+        fields = ('author', 'title', 'category', 'content', 'image', 'tags')
 
     def validate_image(self, image: str):
         mime_type, raw_image = image.split(';base64,')
@@ -188,8 +188,7 @@ class CreateArticleSerializer(serializers.ModelSerializer):
 
 class ArticteUpdateSerializer(serializers.ModelSerializer):
     image = serializers.CharField(allow_blank=True, allow_null=True)
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                              many=True)
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
 
     class Meta:
         model = Article
