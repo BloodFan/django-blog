@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKER_IMAGE_REPO: bandirom/django-template
+  DOCKER_IMAGE_REPO: bloodfan/django-blog
 
 jobs:
   tests:
@@ -29,5 +29,5 @@ jobs:
         with:
           push: ${{ github.event_name != 'pull_request' }}
           context: .
-          tags: ${{ env.DOCKER_IMAGE }},latest
+          tags: ${{ env.DOCKER_IMAGE_REPO }},latest
           file: docker/prod/web/Dockerfile
