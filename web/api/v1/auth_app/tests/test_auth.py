@@ -204,6 +204,7 @@ def test_login_inactive_user(client, user_inactive, payload, expected_status):
         ),  # different passwords
     ),
 )
+@email_settings
 def test_sign_up(client, user, payload, expected_status):
     """test authentication procedure"""
     response = client.post(path=reverse('api:v1:auth_app:sign-up'), data=payload, follow=True)
