@@ -40,10 +40,11 @@ services:
     extra_hosts:
       - "gateway-host:172.17.0.1"
   celery:
-    build:
-      context: .
-      dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/django-template:${DOCKER_TAG:-latest}
+    image: bloodfan/django-blog
+    # build:
+    #   context: .
+    #   dockerfile: docker/prod/web/Dockerfile
+    # image: bandirom/django-template:${DOCKER_TAG:-latest}
     entrypoint: ""
     command: celery -A src worker --beat -l info
     env_file:
