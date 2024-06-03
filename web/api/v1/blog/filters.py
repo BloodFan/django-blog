@@ -1,4 +1,4 @@
-from django.db.models import F, Q, QuerySet
+from django.db.models import Q, QuerySet
 from django_filters import rest_framework as filters
 
 from blog.models import Article, Tag

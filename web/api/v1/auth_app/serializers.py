@@ -2,21 +2,11 @@ from datetime import date
 
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from api.v1.auth_app.services import AuthAppService
-
+from auth_app.choices import error_messages
 User = get_user_model()
-
-error_messages = {
-    'not_verified': _('Email not verified'),
-    'not_active': _('Your account is not active. Please contact Your administrator'),
-    'wrong_credentials': _('Entered email or password is incorrect'),
-    'already_registered': _('User is already registered with this e-mail address'),
-    'password_not_match': _('The two password fields did not match'),
-    'incorrect_birthday': _('date of birth is incorrect'),
-}
 
 
 class PasswordConfirmSerializer(serializers.Serializer):
@@ -68,16 +58,7 @@ class LoginSerializer(serializers.Serializer):
         email = data.get('email')
         password = data.get('password')
         user = self.authenticate(email=email, password=password)
-        if not user:
-            user = AuthAppService.get_user(email)
-            if not user:
-                msg = {'email': error_messages['wrong_credentials']}
-                raise serializers.ValidationError(msg)
-            if not user.is_active:
-                msg = {'email': error_messages['not_active']}
-                raise serializers.ValidationError(msg)
-            msg = {'email': error_messages['wrong_credentials']}
-            raise serializers.ValidationError(msg)
+        AuthAppService.validate_user(email, password, user)
         data['user'] = user
         return data
 

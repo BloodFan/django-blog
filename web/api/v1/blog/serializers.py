@@ -10,7 +10,7 @@ from transliterate import translit
 
 from actions.choices import ActionEvent, ActionMeta
 from api.v1.actions.services import ActionService
-from blog.models import Article, Category, Comment, Tag, TagArticle
+from blog.models import Article, Category, Comment, Tag
 
 from .services import BlogService
 

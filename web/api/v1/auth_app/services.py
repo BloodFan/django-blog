@@ -14,11 +14,13 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import serializers
 
 from api.email_services import BaseEmailHandler
 
 from main import tasks
 from main.decorators import except_shell
+from auth_app.choices import error_messages
 
 if TYPE_CHECKING:
     from main.models import UserType
@@ -135,6 +137,20 @@ class AuthAppService:
         tasks.send_information_email.delay(
             subject=subject, template_name=template_name, context=context, to_email=user.email
         )
+
+    @staticmethod
+    def validate_user(email: str, password: str, user: User):
+        """Проверка существования и активности пользователя."""
+        if not user:
+            user = AuthAppService.get_user(email)
+            if not user:
+                msg = {'email': error_messages['wrong_credentials']}
+                raise serializers.ValidationError(msg)
+            if not user.is_active:
+                msg = {'email': error_messages['not_active']}
+                raise serializers.ValidationError(msg)
+            msg = {'email': error_messages['wrong_credentials']}
+            raise serializers.ValidationError(msg)
 
 
 class PasswordResetService:

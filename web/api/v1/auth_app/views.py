@@ -48,29 +48,32 @@ class SignUpView(GenericAPIView):
         )
 
 
-class LoginView(auth_views.LoginView):
-    serializer_class = serializers.LoginSerializer
-
-
-# class LoginView(GenericAPIView):
-#     permission_classes = (AllowAny,)
+# class LoginView(auth_views.LoginView):
 #     serializer_class = serializers.LoginSerializer
 
-#     def post(self, request):
-#         service = LoginService()
 
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
+class LoginView(GenericAPIView):
+    """
+    Альтернатива использованию auth_views.LoginView
+    """
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.LoginSerializer
 
-#         data = service.get_tokens(serializer.validated_data['user'])
+    def post(self, request):
+        service = LoginService()
 
-#         jwt_serializer = serializers.JWTSerializer(data=data)
-#         jwt_serializer.is_valid(raise_exception=True)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-#         response = Response(jwt_serializer.data, status=status.HTTP_200_OK)
-#         service.set_cookie(response)
+        data = service.get_tokens(serializer.validated_data['user'])
 
-#         return response
+        jwt_serializer = serializers.JWTSerializer(data=data)
+        jwt_serializer.is_valid(raise_exception=True)
+
+        response = Response(jwt_serializer.data, status=status.HTTP_200_OK)
+        service.set_cookie(response)
+
+        return response
 
 
 class LogoutView(auth_views.LogoutView):

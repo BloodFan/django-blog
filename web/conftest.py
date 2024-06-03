@@ -65,7 +65,7 @@ def article(category, tags, user) -> Article:
         author=user,
         title='test_title',
         content='Абсолютно все, что угодно!',
-        image='no-image-available.jpg',  #  путь к файлу а не base64
+        image='no-image-available.jpg',  # путь к файлу а не base64
         category=category,
     )
     article.tags.set(tags)

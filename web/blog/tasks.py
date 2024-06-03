@@ -19,11 +19,16 @@ def new_articles_admin_notify():
     subject = 'New articles.'
 
     # tasks.send_information_email.apply_async(
-    #     kwargs={'subject': subject, 'template_name': template_name, 'context': context, 'to_email': settings.ADMIN_EMAIL}
+    #     kwargs={
+    #         'subject': subject,
+    #         'template_name': template_name,
+    #         'context': context,
+    #         'to_email': settings.ADMIN_EMAIL}
     # )
     list_email = [
         settings.ADMIN_EMAIL,
-    ]  #  Захардкодено, при отправлении сообщения списку пользователей
+    ]
+    #  Захардкодено, при отправлении сообщения списку пользователей
     connection = get_connection(fail_silently=False, timeout=10)  # плюсы и минусы - урок 18
 
     for email in list_email:

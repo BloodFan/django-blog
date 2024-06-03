@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from django.conf import settings
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 if TYPE_CHECKING:

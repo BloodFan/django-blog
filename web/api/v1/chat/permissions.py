@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from django.conf import settings
-from rest_framework.permissions import SAFE_METHODS, BasePermission
+from rest_framework.permissions import BasePermission
 
 if TYPE_CHECKING:
     from api.v1.chat.views import ValidateJWTAPIView

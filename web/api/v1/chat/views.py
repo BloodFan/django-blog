@@ -4,7 +4,6 @@ GET /api/v1/chat/users?user_ids=2,3,4
 POST /api/v1/chat/users; {'users': [2,3,4]}
  '''
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.exceptions import NotFound
