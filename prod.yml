@@ -5,13 +5,14 @@ x-variables: &variables
 services:
   web:
     hostname: web-blog
-    build:
-      context: .
-      dockerfile: docker/prod/web/Dockerfile
-      args:
-        NGINX_BASIC_AUTH_LOGIN: test@test.com
-        NGINX_BASIC_AUTH_PASSWORD: tester26
-    image: bandirom/django-template:${DOCKER_TAG:-latest}
+    image: cr.yandex/crp90af9id9g0sj57bp8/bloodfan/django-blog:latest
+    # build:
+    #   context: .
+    #   dockerfile: docker/prod/web/Dockerfile
+    #   args:
+    #     NGINX_BASIC_AUTH_LOGIN: test@test.com
+    #     NGINX_BASIC_AUTH_PASSWORD: tester26
+    # image: bloodfan/django-template:${DOCKER_TAG:-latest}
     volumes:
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
@@ -69,6 +70,8 @@ services:
     env_file:
       - docker/prod/env/.db.env
     restart: always
+    ports:
+      - "5432:5432"
     networks:
       - separated_network
     healthcheck:

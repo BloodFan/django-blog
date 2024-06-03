@@ -73,6 +73,6 @@ def test_create_article(auth_client, category, tags, admin_client):
     assert response.status_code == status.HTTP_200_OK
 
     article = Article.objects.first()
-    # article.status = ArticleStatus.ACTIVE
+    article.status = ArticleStatus.ACTIVE
 
     assert article.status == ArticleStatus.ACTIVE
