@@ -56,6 +56,7 @@ class LoginView(GenericAPIView):
     """
     Альтернатива использованию auth_views.LoginView
     """
+
     permission_classes = (AllowAny,)
     serializer_class = serializers.LoginSerializer
 

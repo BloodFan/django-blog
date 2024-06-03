@@ -9,18 +9,17 @@ from django.db import transaction
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import serializers
 
 from api.email_services import BaseEmailHandler
+from auth_app.choices import error_messages
 
 from main import tasks
 from main.decorators import except_shell
-from auth_app.choices import error_messages
 
 if TYPE_CHECKING:
     from main.models import UserType

@@ -6,6 +6,7 @@ from rest_framework import serializers
 
 from api.v1.auth_app.services import AuthAppService
 from auth_app.choices import error_messages
+
 User = get_user_model()
 
 

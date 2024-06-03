@@ -29,7 +29,7 @@ def test_create_article(auth_client, category, tags, admin_client):
         'title': 'test_title',
         'content': 'Абсолютно все, что угодно!',
         'image': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXR'
-                 'STlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=',
+        'STlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=',
         'category': 1,
         'tags': [1, 2],
     }

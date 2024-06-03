@@ -18,8 +18,8 @@ class LoginService:
         self.access_token = str(AccessToken.for_user(user))
         self.refresh_token = str(RefreshToken.for_user(user))
 
-        self.access_token_expiration = (timezone.now() + settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'])
-        self.refresh_token_expiration = (timezone.now() + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'])
+        self.access_token_expiration = timezone.now() + settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME']
+        self.refresh_token_expiration = timezone.now() + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']
 
         data = {'access': self.access_token, 'refresh': self.refresh_token}
         return data
