@@ -130,8 +130,9 @@ class BlogService:
 
     def admin_notify(self, time_period: datetime) -> Article:
         """Создано для Selery task"""
+        admin = User.objects.get(email=settings.ADMIN_EMAIL)
         return (
-            self.get_active_articles()
+            self.get_active_articles(admin)
             .filter(created__gte=time_period)
             .annotate(
                 vote_count=ExpressionWrapper(F('up_votes') + F('down_votes'), output_field=IntegerField()),
