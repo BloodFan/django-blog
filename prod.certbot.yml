@@ -6,13 +6,15 @@ services:
     container_name: nginx
     volumes:
       - letsencrypt:/etc/letsencrypt
-      - ./docker/prod/nginx/certbot.conf:/etc/nginx/user.conf.d/nginx_template.conf:ro
-      - ./docker/prod/nginx/conf.d/proxy.conf:/etc/nginx/user.conf.d/proxy.conf:ro
+      # - ./docker/prod/nginx/certbot.conf:/etc/nginx/user.conf.d/nginx_template.conf:ro
+      # - ./docker/prod/nginx/conf.d/proxy.conf:/etc/nginx/user.conf.d/proxy.conf:ro
+      - ./certbot.conf:/etc/nginx/user.conf.d/nginx_template.conf:ro
+      - ./proxy.conf:/etc/nginx/user.conf.d/proxy.conf:ro
     environment:
-      CERTBOT_EMAIL: your@email.com
+      CERTBOT_EMAIL: 021alykar1990@gmail.com
       # variable names are space-separated
       ENVSUBST_VARS: APP
-      APP: your.domain.com
+      APP: kimaykin.zapto.org
 
 
 volumes:
