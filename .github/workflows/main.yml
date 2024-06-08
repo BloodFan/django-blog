@@ -31,3 +31,6 @@ jobs:
           context: .
           tags: ${{ env.DOCKER_IMAGE_REPO }}:latest
           file: docker/prod/web/Dockerfile
+  deploy:
+    needs: [push]
+    uses: ./.github/workflows/deploy_to_server.yml
