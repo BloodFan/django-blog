@@ -27,11 +27,16 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v2
 
-        - name: Add SSH key
-          uses: webfactory/ssh-agent@v0.8.0
+        # - name: Add SSH key
+        #   uses: webfactory/ssh-agent@v0.8.0
+        #   with:
+        #     ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+        #     ssh-passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
+        - name: Load SSH key with passphrase
+          uses: shimataro/ssh-key-action@v2
           with:
-            ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
-            ssh-passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
+            key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+            passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
 
         - name: Copy Docker Compose file to server
           uses: appleboy/scp-action@v0.0.4
