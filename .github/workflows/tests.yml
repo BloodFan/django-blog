@@ -65,21 +65,33 @@ jobs:
           path: /tmp
       - name: Load image
         run: docker load --input /tmp/template.tar
+      - name: Create .env file
+        run: |
+          echo "SECRET_KEY=${{ env.SECRET_KEY }}" > .env
+          echo "POSTGRES_USER=${{ env.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_DB=${{ env.POSTGRES_DB }}" >> .env
+          echo "POSTGRES_HOST=${{ env.POSTGRES_HOST }}" >> .env
+          echo "POSTGRES_PORT=${{ env.POSTGRES_PORT }}" >> .env
+          echo "SQL_ENGINE=${{ env.SQL_ENGINE }}" >> .env
       - name: Migration check
         run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} python manage.py makemigrations --check
       - name: Check DB Engine
-        run: |
-          docker run \
-            -e SECRET_KEY=${{ env.SECRET_KEY }} \
-            -e POSTGRES_USER=${{ env.POSTGRES_USER }} \
-            -e POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }} \
-            -e POSTGRES_DB=${{ env.POSTGRES_DB }} \
-            -e POSTGRES_HOST=${{ env.POSTGRES_HOST }} \
-            -e POSTGRES_PORT=${{ env.POSTGRES_PORT }} \
-            -e SQL_ENGINE=${{ env.SQL_ENGINE }} \
-            --entrypoint="" \
-            ${{ env.DOCKER_IMAGE }} \
-            python check_db.py
+        run: docker run --env-file .env --entrypoint="" ${{ env.DOCKER_IMAGE }} python check_db.py
+
+      # - name: Check DB Engine
+      #   run: |
+      #     docker run \
+      #       -e SECRET_KEY=${{ env.SECRET_KEY }} \
+      #       -e POSTGRES_USER=${{ env.POSTGRES_USER }} \
+      #       -e POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }} \
+      #       -e POSTGRES_DB=${{ env.POSTGRES_DB }} \
+      #       -e POSTGRES_HOST=${{ env.POSTGRES_HOST }} \
+      #       -e POSTGRES_PORT=${{ env.POSTGRES_PORT }} \
+      #       -e SQL_ENGINE=${{ env.SQL_ENGINE }} \
+      #       --entrypoint="" \
+      #       ${{ env.DOCKER_IMAGE }} \
+      #       python check_db.py
       - name: Tests
         run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} pytest
 
