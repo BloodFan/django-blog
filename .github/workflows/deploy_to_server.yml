@@ -27,20 +27,10 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v2
 
-        # - name: Add SSH key
-        #   uses: webfactory/ssh-agent@v0.8.0
-        #   with:
-        #     ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
-        #     ssh-passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
-        - name: Use SSH key with passphrase
-          id: ssh_key
-          run: |
-            mkdir -p ~/.ssh
-            echo "${{ secrets.SERVER_PRIVATE_SSH_KEY }}" > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
-            eval "$(ssh-agent -s)"
-            echo "${{ secrets.SERVER_SSH_PASSPHRASE }}" | ssh-add ~/.ssh/id_rsa
-            ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        - name: Add SSH key
+          uses: webfactory/ssh-agent@v0.8.0
+          with:
+            ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
 
         - name: Copy Docker Compose file to server
           uses: appleboy/scp-action@v0.0.4
