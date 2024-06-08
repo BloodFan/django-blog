@@ -76,4 +76,4 @@ jobs:
         key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
         script: |
           cd /home/tester-v1/django-blog
-          docker-compose -f prod.yml up -d --build
+          docker compose -f prod.yml up -d --build
