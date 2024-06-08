@@ -2,7 +2,7 @@ name: Tests
 
 env:
   COVERAGE_THRESHOLD: 95
-  DOCKER_IMAGE_REPO: bandirom/django-template
+  DOCKER_IMAGE_REPO: bloodfan/django-template
 
 on:
   workflow_call:
@@ -66,6 +66,8 @@ jobs:
         run: docker load --input /tmp/template.tar
       - name: Migration check
         run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} python manage.py makemigrations --check
+      - name: Check DB Engine
+        run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} python check_db.py
       - name: Tests
         run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} pytest
 

@@ -5,7 +5,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_ALLOW_ALL = True  # change this for production
 
-CSRF_TRUSTED_ORIGINS = ['https://kimaykin.zapto.org/']
+CSRF_TRUSTED_ORIGINS = ['https://kimaykin.zapto.org']
 
 X_FRAME_OPTIONS = 'DENY'
 
