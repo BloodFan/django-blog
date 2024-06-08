@@ -54,7 +54,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
         source: 'prod.yml'
-        target: '/django-blog/prod.yml'
+        target: '/home/tester-v1/django-blog/prod.yml'
 
     - name: Copy docker folder to server
       uses: appleboy/scp-action@v0.0.4
