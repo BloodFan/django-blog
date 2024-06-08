@@ -68,7 +68,15 @@ jobs:
       - name: Migration check
         run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} python manage.py makemigrations --check
       - name: Check DB Engine
-        run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} python check_db.py
+        run: docker run \
+          -e SECRET_KEY=$SECRET_KEY \
+          -e POSTGRES_USER=$POSTGRES_USER \
+          -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+          -e POSTGRES_DB=$POSTGRES_DB \
+          -e POSTGRES_HOST=$POSTGRES_HOST \
+          -e POSTGRES_PORT=$POSTGRES_PORT \
+          -e SQL_ENGINE=$SQL_ENGINE \
+          --entrypoint="" ${{ env.DOCKER_IMAGE }} python check_db.py
       - name: Tests
         run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} pytest
 
@@ -83,7 +91,10 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: 'postgres'
+
+          POSTGRES_USER: 'postgres'
+          POSTGRES_DB: 'postgres'
 
   test_isort:
     runs-on: ubuntu-latest
