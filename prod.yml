@@ -1,7 +1,7 @@
 services:
   web:
     hostname: web-blog
-    image: bloodfan/django-blog
+    image: bloodfan/django-blog:${DOCKER_TAG:-latest}
     # image: cr.yandex/crp90af9id9g0sj57bp8/bloodfan/django-blog:latest
     # build:
     #   context: .
@@ -34,7 +34,7 @@ services:
     extra_hosts:
       - "gateway-host:172.17.0.1"
   celery:
-    image: bloodfan/django-blog
+    image: bloodfan/django-blog:${DOCKER_TAG:-latest}
     # build:
     #   context: .
     #   dockerfile: docker/prod/web/Dockerfile

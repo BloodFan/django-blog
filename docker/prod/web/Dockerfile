@@ -25,8 +25,8 @@ ARG UID=1000
 ARG USER=ubuntu
 ARG WHEELS_PATH=/etc/wheels
 
-ARG NGINX_BASIC_AUTH_LOGIN=test@test.com
-ARG NGINX_BASIC_AUTH_PASSWORD=tester26
+ARG NGINX_BASIC_AUTH_LOGIN=033alykar1990@gmail.com
+ARG NGINX_BASIC_AUTH_PASSWORD=320Mortus0991
 
 RUN apk add --update --no-cache postgresql-dev curl nginx && \
     addgroup -g $GID -S $USER && \
