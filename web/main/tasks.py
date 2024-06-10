@@ -38,7 +38,6 @@ def send_information_email(
     activate(letter_language)
     _to_email: list[str] = [to_email] if isinstance(to_email, str) else to_email
     email_message = EmailMultiAlternatives(
-        from_email=settings.ADMIN_EMAIL,
         subject=subject,
         to=_to_email,
         from_email=kwargs.get('from_email'),
