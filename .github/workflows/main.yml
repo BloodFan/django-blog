@@ -85,5 +85,9 @@ jobs:
         key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
         script: |
           cd /home/tester-v1/django-blog
+          docker compose -f prod.yml down -v
+          rm -rf docker/
+          rm prod.yml
+          docker rmi $(docker images -q) -f
           docker compose -f prod.yml up -d --build
           docker compose -f prod.certbot.yml up -d --build

@@ -37,14 +37,15 @@ def send_information_email(
     """
     print(f'{kwargs.get("from_email")=}')
     print(to_email)
+    print(111)
     activate(letter_language)
+
     _to_email: list[str] = [to_email] if isinstance(to_email, str) else to_email
     print(_to_email)
     email_message = EmailMultiAlternatives(
         subject=subject,
         to=_to_email,
         from_email=kwargs.get('from_email'),
-        # from_email='BloodFan2023@yandex.ru',
         bcc=kwargs.get('bcc'),
         cc=kwargs.get('cc'),
         reply_to=kwargs.get('reply_to'),
