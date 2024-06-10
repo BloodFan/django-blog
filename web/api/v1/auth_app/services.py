@@ -133,6 +133,8 @@ class AuthAppService:
         context = {'user_id': user_id, 'full_name': user.full_name, 'frontend_url': settings.FRONTEND_URL}
         subject = 'Добро пожаловать!'
 
+        print(f'{user.email=}')
+
         tasks.send_information_email.delay(
             subject=subject,
             template_name=template_name,
