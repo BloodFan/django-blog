@@ -138,7 +138,7 @@ class AuthAppService:
             template_name=template_name,
             context=context,
             to_email=user.email,
-            # from_email=settings.ADMIN_EMAIL,
+            from_email=settings.ADMIN_EMAIL,
         )
 
     @staticmethod
