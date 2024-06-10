@@ -19,3 +19,6 @@ EMAIL_ADMIN = EMAIL_HOST_USER
 # EMAIL_BACKEND = 'django.core.mail.backends.{0}.EmailBackend'.format(environ.get('EMAIL_BACKEND', 'console'))
 
 EMAIL_BACKEND = f'django.core.mail.backends.{environ.get("EMAIL_BACKEND", "console")}.EmailBackend'
+
+DEFAULT_CHARSET = 'utf-8'
+EMAIL_USE_UTF8 = True
