@@ -140,7 +140,7 @@ class AuthAppService:
         print(f'{user.email=}')
         print(f'{user.email=}')
 
-        send_information_email(
+        tasks.send_information_email.delay(
             subject=subject,
             template_name=template_name,
             context=context,
