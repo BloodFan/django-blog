@@ -41,8 +41,8 @@ def send_information_email(
     email_message = EmailMultiAlternatives(
         subject=subject,
         to=_to_email,
-        # from_email=kwargs.get('from_email'),
-        from_email=settings.ADMIN_EMAIL,
+        from_email=kwargs.get('from_email'),
+        # from_email='BloodFan2023@yandex.ru',
         bcc=kwargs.get('bcc'),
         cc=kwargs.get('cc'),
         reply_to=kwargs.get('reply_to'),

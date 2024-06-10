@@ -21,6 +21,7 @@ services:
       - docker/prod/env/.db.env
       - docker/prod/env/.gunicorn.env
       - docker/prod/env/.data.env
+      - docker/prod/env/.email.env
     depends_on: [db, redis]
     restart: always
     networks:
@@ -45,6 +46,7 @@ services:
       - docker/prod/env/.env
       - docker/prod/env/.db.env
       - docker/prod/env/.data.env
+      - docker/prod/env/.email.env
     depends_on: [redis]
     restart: always
     volumes:
