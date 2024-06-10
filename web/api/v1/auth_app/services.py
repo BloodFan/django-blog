@@ -134,13 +134,14 @@ class AuthAppService:
         subject = 'Добро пожаловать!'
 
         print(f'{user.email=}')
+        print(f'{settings.ADMIN_EMAIL=}')
 
         tasks.send_information_email.delay(
             subject=subject,
             template_name=template_name,
             context=context,
             to_email=user.email,
-            # from_email=settings.ADMIN_EMAIL,
+            from_email=settings.ADMIN_EMAIL,
         )
 
     @staticmethod
