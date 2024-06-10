@@ -75,11 +75,11 @@ jobs:
           echo "POSTGRES_PORT=${{ env.POSTGRES_PORT }}" >> .env
           echo "SQL_ENGINE=${{ env.SQL_ENGINE }}" >> .env
       - name: Migration check
-        run: docker run --env-file .env --entrypoint="" ${{ env.DOCKER_IMAGE }} python manage.py makemigrations --check
+        run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} python manage.py makemigrations --check
       - name: Check DB Engine
         run: docker run --env-file .env --entrypoint="" ${{ env.DOCKER_IMAGE }} python check_db.py
       - name: Tests
-        run: docker run --env-file .env --entrypoint="" ${{ env.DOCKER_IMAGE }} pytest
+        run: docker run --entrypoint="" ${{ env.DOCKER_IMAGE }} pytest
 
     services:
       postgres:
