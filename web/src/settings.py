@@ -40,7 +40,7 @@ ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://127.0.0.1:8000/')
-ADMIN_EMAIL = os.environ.get('EMAIL_HOST_USER', 'test@test.com')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'test@test.com')
 CHAT_URL = os.environ.get('CHAT_URL', 'https://127.0.0.1:8010')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
