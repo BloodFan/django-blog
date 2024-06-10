@@ -1,13 +1,17 @@
-from typing import TYPE_CHECKING, NamedTuple, Optional
+from os import path
+from typing import TYPE_CHECKING, Any, NamedTuple, Optional
 from urllib.parse import urlencode, urljoin
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core import signing
+from django.core.mail import EmailMultiAlternatives
 from django.db import transaction
+from django.template import loader
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.translation import activate
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
@@ -134,7 +138,7 @@ class AuthAppService:
         subject = 'Добро пожаловать!'
 
         print(f'{user.email=}')
-        print(f'{settings.ADMIN_EMAIL=}')
+        print(f'{user.email=}')
 
         tasks.send_information_email.delay(
             subject=subject,
@@ -186,9 +190,10 @@ class PasswordResetService:
         }
         subject = 'Восстановление пароля, проект django-blog.'
 
-        tasks.send_information_email.delay(
-            subject=subject, template_name=template_name, context=context, to_email=user.email
-        )
+        # tasks.send_information_email.delay(
+        #     subject=subject, template_name=template_name, context=context, to_email=user.email
+        # )
+        send_information_email(subject=subject, template_name=template_name, context=context, to_email=user.email)
 
     def decode_token_and_uid(self, data: NamedTuple) -> User:
         try:
@@ -242,3 +247,45 @@ def full_logout(request):
         response.data = {"detail": message}
         response.status_code = status.HTTP_200_OK
     return response
+
+
+def send_information_email(
+    *,  # Все аргументы после * должны быть переданы в виде ключевых
+    subject: str,
+    template_name: str,
+    to_email: list[str] | str,
+    context: dict,
+    letter_language: str = 'en',
+    **kwargs: Optional[Any],
+) -> bool:
+    """
+    :param subject: email subject
+    :param template_name: template path to email template
+    :param context: data what will be passed into email
+    :param to_email: receiver email(s)
+    :param letter_language: translate letter to selected lang
+    :param kwargs: from_email, bcc, cc, reply_to and file_path params
+    """
+    print(f'{kwargs.get("from_email")=}')
+    print(to_email)
+    activate(letter_language)
+    _to_email: list[str] = [to_email] if isinstance(to_email, str) else to_email
+    print(_to_email)
+    email_message = EmailMultiAlternatives(
+        subject=subject,
+        to=_to_email,
+        from_email=kwargs.get('from_email'),
+        # from_email='BloodFan2023@yandex.ru',
+        bcc=kwargs.get('bcc'),
+        cc=kwargs.get('cc'),
+        reply_to=kwargs.get('reply_to'),
+        connection=kwargs.get('connection'),
+    )
+    html_email: str = loader.render_to_string(template_name, context)
+    email_message.attach_alternative(html_email, 'text/html')
+    if file_path := kwargs.get('file_path'):
+        file_path = path.join(settings.BASE_DIR, file_path)
+        email_message.attach_file(file_path, kwargs.get('mimetype'))
+    email_message.encoding = 'utf-8'
+    email_message.send()
+    return True
