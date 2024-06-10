@@ -140,7 +140,7 @@ class AuthAppService:
         print(f'{user.email=}')
         print(f'{user.email=}')
 
-        tasks.send_information_email.delay(
+        send_information_email(
             subject=subject,
             template_name=template_name,
             context=context,
@@ -190,10 +190,9 @@ class PasswordResetService:
         }
         subject = 'Восстановление пароля, проект django-blog.'
 
-        # tasks.send_information_email.delay(
-        #     subject=subject, template_name=template_name, context=context, to_email=user.email
-        # )
-        send_information_email(subject=subject, template_name=template_name, context=context, to_email=user.email)
+        tasks.send_information_email.delay(
+            subject=subject, template_name=template_name, context=context, to_email=user.email
+        )
 
     def decode_token_and_uid(self, data: NamedTuple) -> User:
         try:
