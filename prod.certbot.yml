@@ -11,8 +11,9 @@ services:
     environment:
       CERTBOT_EMAIL: 021alykar1990@gmail.com
       # variable names are space-separated
-      ENVSUBST_VARS: APP
+      ENVSUBST_VARS: APP APP_CHAT
       APP: kimaykin.zapto.org
+      APP_CHAT: chat-kimaykin.zapto.org
 
 
 volumes:

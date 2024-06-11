@@ -43,8 +43,8 @@ FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://127.0.0.1:8000/')
 
 ADMIN_EMAIL = os.environ.get('EMAIL_HOST_USER', 'test@test.com')
 SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', 'test@test.com')
-# CHAT_URL = os.environ.get('CHAT_URL', 'https://127.0.0.1:8010')
-CHAT_URL = os.environ.get('FRONTEND_URL', 'https://127.0.0.1:8010')
+CHAT_URL = os.environ.get('CHAT_URL', 'https://127.0.0.1:8010/')
+
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 EMAIL_CONFIRMATION_EXPIRE_DAYS = 3 * 86400

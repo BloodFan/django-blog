@@ -59,6 +59,7 @@ jobs:
         script: |
           cd /home/tester-v1/django-blog
           docker compose -f prod.yml down -v
+          docker compose -f prod.certbot.yml down -v
           rm -rf docker/
           rm prod.yml
           docker image prune -a -f

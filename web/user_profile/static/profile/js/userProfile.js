@@ -138,6 +138,6 @@ function updateFollowButton(status){
 function startChatMessageHandler() {
   userId = $(this).attr('data-userId')
   console.log('userId', userId)
-  const url = `${chatUrl}/chat/init/?userId=${userId}`// Переменная из settings.py для адреса Chat(добавлена в head в HTML)
+  const url = `${chatUrl}chat/init/?userId=${userId}`// Переменная из settings.py для адреса Chat(добавлена в head в HTML)
   window.open(url, '_blank').focus()
 }
