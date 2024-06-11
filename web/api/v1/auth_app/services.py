@@ -131,10 +131,7 @@ class AuthAppService:
         template_name = 'emails/confirmation.html'
         user_id = user.confirmation_key
         context = {'user_id': user_id, 'full_name': user.full_name, 'frontend_url': settings.FRONTEND_URL}
-        subject = 'Добро пожаловать111!'
-
-        print(f'{user.email=}')
-        print(f'{user.email=}')
+        subject = 'Добро пожаловать!'
 
         tasks.send_information_email.delay(
             subject=subject,
@@ -187,7 +184,11 @@ class PasswordResetService:
         subject = 'Восстановление пароля, проект django-blog.'
 
         tasks.send_information_email.delay(
-            subject=subject, template_name=template_name, context=context, to_email=user.email
+            subject=subject,
+            template_name=template_name,
+            context=context,
+            to_email=user.email,
+            from_email=settings.ADMIN_EMAIL,
         )
 
     def decode_token_and_uid(self, data: NamedTuple) -> User:

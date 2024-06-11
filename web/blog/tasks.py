@@ -33,7 +33,12 @@ def new_articles_admin_notify():
 
     for email in list_email:
         tasks.send_information_email(
-            subject=subject, template_name=template_name, context=context, to_email=email, connection=connection
+            subject=subject,
+            template_name=template_name,
+            context=context,
+            to_email=email,
+            from_email=settings.ADMIN_EMAIL,
+            connection=connection,
         )
 
 

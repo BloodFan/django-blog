@@ -35,13 +35,8 @@ def send_information_email(
     :param letter_language: translate letter to selected lang
     :param kwargs: from_email, bcc, cc, reply_to and file_path params
     """
-    print(f'{kwargs.get("from_email")=}')
-    print(to_email)
-    print(111)
     activate(letter_language)
-
     _to_email: list[str] = [to_email] if isinstance(to_email, str) else to_email
-    print(_to_email)
     email_message = EmailMultiAlternatives(
         subject=subject,
         to=_to_email,

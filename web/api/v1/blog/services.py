@@ -102,7 +102,11 @@ class BlogService:
         subject = 'Пост создан!'
 
         tasks.send_information_email.delay(
-            subject=subject, template_name=template_name, context=context, to_email=user.email
+            subject=subject,
+            template_name=template_name,
+            context=context,
+            to_email=user.email,
+            from_email=settings.ADMIN_EMAIL,
         )
 
     @staticmethod
@@ -116,7 +120,11 @@ class BlogService:
         }
         subject = 'Премодерация нового поста.'
         tasks.send_information_email.delay(
-            subject=subject, template_name=template_name, context=context, to_email=settings.ADMIN_EMAIL
+            subject=subject,
+            template_name=template_name,
+            context=context,
+            to_email=settings.ADMIN_EMAIL,
+            from_email=settings.ADMIN_EMAIL,
         )
 
     @staticmethod
