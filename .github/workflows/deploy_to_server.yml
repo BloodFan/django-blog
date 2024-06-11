@@ -1,52 +1,52 @@
-# # скопировано, не закончено
-# name: Deploy to Server
+# скопировано, не закончено
+name: Deploy to Server
 
-# env:
-#   COVERAGE_THRESHOLD: 95
-#   DOCKER_IMAGE_REPO: bloodfan/django-template
+env:
+  COVERAGE_THRESHOLD: 95
+  DOCKER_IMAGE_REPO: bloodfan/django-template
 
-# on:
-#   workflow_call:
-#   push:
-#     branches-ignore:
-#       - master
-#     tags-ignore:
-#       - v*
+on:
+  workflow_call:
+  push:
+    branches-ignore:
+      - master
+    tags-ignore:
+      - v*
 
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
-# jobs:
-#     deploy:
-#         name: Deploy to Server
-#         runs-on: ubuntu-latest
-#         # needs: push
+jobs:
+    deploy:
+        name: Deploy to Server
+        runs-on: ubuntu-latest
+        # needs: push
 
-#         steps:
-#         - name: Checkout repository
-#           uses: actions/checkout@v2
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
 
-#         - name: Add SSH key
-#           uses: webfactory/ssh-agent@v0.8.0
-#           with:
-#             ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+        - name: Add SSH key
+          uses: webfactory/ssh-agent@v0.8.0
+          with:
+            ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
 
-#         - name: Copy Docker Compose file to server
-#           uses: appleboy/scp-action@v0.0.4
-#           with:
-#             host: ${{ secrets.SERVER_HOST }}
-#             username: ${{ secrets.SERVER_USER }}
-#             source: 'prod.yml'
-#             target: '/django-blog/prod.yml'
+        - name: Copy Docker Compose file to server
+          uses: appleboy/scp-action@v0.0.4
+          with:
+            host: ${{ secrets.SERVER_HOST }}
+            username: ${{ secrets.SERVER_USER }}
+            source: 'prod.yml'
+            target: '/django-blog/prod.yml'
 
-#         - name: Copy docker folder to server
-#           uses: appleboy/scp-action@v0.0.4
-#           with:
-#             host: ${{ secrets.SERVER_HOST }}
-#             username: ${{ secrets.SERVER_USER }}
-#             source: 'docker/*'
-#             target: '/django-blog/'
+        - name: Copy docker folder to server
+          uses: appleboy/scp-action@v0.0.4
+          with:
+            host: ${{ secrets.SERVER_HOST }}
+            username: ${{ secrets.SERVER_USER }}
+            source: 'docker/*'
+            target: '/django-blog/'
 
-#         - name: Run Docker Compose
-#           run: ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd /home/tester-v1/django-blog && docker-compose -f prod.yml up -d --build"
+        - name: Run Docker Compose
+          run: ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd /home/tester-v1/django-blog && docker-compose -f prod.yml up -d --build"

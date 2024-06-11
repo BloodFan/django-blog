@@ -123,7 +123,7 @@ class BlogService:
             subject=subject,
             template_name=template_name,
             context=context,
-            to_email=settings.ADMIN_EMAIL,
+            to_email=settings.SUPERUSER_EMAIL,
             from_email=settings.ADMIN_EMAIL,
         )
 
