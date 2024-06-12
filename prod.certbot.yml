@@ -12,8 +12,8 @@ services:
       CERTBOT_EMAIL: 021alykar1990@gmail.com
       # variable names are space-separated
       ENVSUBST_VARS: APP APP_CHAT
-      APP: kimaykin-django.ru,www.kimaykin-django.ru
-      APP_CHAT: chat.kimaykin-django.ru,www.chat.kimaykin-django.ru
+      APP: www.kimaykin-django.ru
+      APP_CHAT: www.chat.kimaykin-django.ru
 
 
 volumes:
