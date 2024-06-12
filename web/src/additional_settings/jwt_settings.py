@@ -32,7 +32,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(days=1),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=2),
-
     'AUTH_COOKIE': 'jwt-auth',  # Имя куки для JWT токена
     'AUTH_COOKIE_REFRESH': 'refresh',  # Имя куки для refresh токена
     'AUTH_COOKIE_DOMAIN': '.dev.kimaykin-django.ru',
