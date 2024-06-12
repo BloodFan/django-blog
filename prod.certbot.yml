@@ -13,7 +13,7 @@ services:
       # variable names are space-separated
       ENVSUBST_VARS: APP
       # ENVSUBST_VARS: APP APP_CHAT
-      APP: kimaykin.zapto.org
+      APP: kimaykin-django.ru
       # APP_CHAT: chat.kimaykin-django.ru
 
 
