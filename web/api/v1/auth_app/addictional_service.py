@@ -31,10 +31,16 @@ class LoginService:
             key=access_token_key,
             value=self.access_token,
             expires=self.access_token_expiration,
+            domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
+            secure=True,
+            httponly=True,
         )
         response.set_cookie(
             key=refresh_token_key,
             value=self.refresh_token,
             expires=self.refresh_token_expiration,
+            domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
+            secure=True,
+            httponly=True,
         )
         return response
