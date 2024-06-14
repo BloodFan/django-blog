@@ -212,10 +212,10 @@ def full_logout(request):
     auth_cookie_name = settings.REST_AUTH['JWT_AUTH_COOKIE']
     refresh_cookie_name = settings.REST_AUTH['JWT_AUTH_REFRESH_COOKIE']
 
-    response.delete_cookie(auth_cookie_name)
+    response.delete_cookie(auth_cookie_name, domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'])
     refresh_token = request.COOKIES.get(refresh_cookie_name)
     if refresh_cookie_name:
-        response.delete_cookie(refresh_cookie_name)
+        response.delete_cookie(refresh_cookie_name, domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'])
     try:
         token = RefreshToken(refresh_token)
         token.blacklist()
