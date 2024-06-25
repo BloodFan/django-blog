@@ -45,3 +45,6 @@ pytest-freezegun
 
 # create-article.slug
 transliterate
+
+# for test comment Viewset
+drf-nested-routers

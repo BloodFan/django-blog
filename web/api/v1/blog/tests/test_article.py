@@ -54,7 +54,7 @@ def test_create_article(auth_client, category, tags, admin_client):
     assert mail.outbox[0].to[0] == article.author.email
     # Уходит сообщение создателю поста
 
-    assert mail.outbox[1].to[0] == settings.ADMIN_EMAIL
+    assert mail.outbox[1].to[0] == settings.SUPERUSER_EMAIL
     # Уходит сообщение администратору
 
     string = mail.outbox[1].alternatives[0][0]

@@ -2,6 +2,7 @@ from .settings import *
 from .settings import ENABLE_SILK, INSTALLED_APPS, INTERNAL_IPS, MIDDLEWARE
 
 CORS_ORIGIN_ALLOW_ALL = True
+
 X_FRAME_OPTIONS = "SAMESITE"
 
 

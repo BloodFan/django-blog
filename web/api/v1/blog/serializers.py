@@ -64,7 +64,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         fields = ('user', 'content', 'parent')
 
     def create(self, validated_data: dict) -> Comment:
-        slug = self.context['view'].kwargs['slug']
+        slug = self.context['view'].kwargs['article_slug']
         article = Article.objects.get(slug=slug)
         validated_data['article'] = article
         comment = super().create(validated_data)
@@ -79,9 +79,18 @@ class CommentCreateSerializer(serializers.ModelSerializer):
     def validate_parent(self, parent: Comment) -> Comment:
         if parent is not None and parent.parent is not None:
             raise ValidationError('Комментарий не может быть parent и children одновременно.')
-        if parent is not None and self.context['view'].kwargs['slug'] != parent.article.slug:
+        if parent is not None and self.context['view'].kwargs['article_slug'] != parent.article.slug:
             raise ValidationError('Нельзя создать child-comment к комментарию другого article')
         return parent
+
+
+class ShortArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = (
+            'id',
+            'title',
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -91,7 +100,12 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'slug', 'url')
+        fields = (
+            'id',
+            'name',
+            'slug',
+            'url',
+        )
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -99,7 +113,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'slug')
+        fields = (
+            'id',
+            'name',
+            'slug',
+        )
 
 
 class ArticleSerializer(serializers.ModelSerializer):

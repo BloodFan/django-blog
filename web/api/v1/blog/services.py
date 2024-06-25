@@ -66,7 +66,7 @@ class BlogService:
 
     def is_author(self, user: User) -> Value:
         if not user.is_authenticated:
-            return Value(True, output_field=BooleanField())
+            return Value(False, output_field=BooleanField())
         return Case(When(author=user, then=Value(True)), default=Value(False), output_field=BooleanField())
 
     def like_annotate(self, user: User) -> Value:
@@ -89,7 +89,9 @@ class BlogService:
     @staticmethod
     def tag_queryset() -> Tag:
         return (
-            Tag.objects.annotate(ordering_count=Count('tagarticles__article'))
+            Tag.objects.prefetch_related('article_set')
+            .annotate(ordering_count=Count('tagarticles__article', distinct=True))
+            # .annotate(comment_count=Count('article_set__comment_set'))
             .order_by(F('ordering_count').desc())
             .all()[:8]
         )

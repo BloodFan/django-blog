@@ -48,6 +48,7 @@ class Article(models.Model):
         through='TagArticle',
         verbose_name='Тег',
         help_text='Укажите теги',
+        related_name='article_set',
     )
     likes = GenericRelation(Like)
 

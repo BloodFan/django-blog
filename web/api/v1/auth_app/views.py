@@ -8,7 +8,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from . import serializers
-from .addictional_service import LoginService
+
+# from .addictional_service import LoginService
 from .services import AuthAppService, PasswordResetService, PasswordResetToken, PasswordResetTokenConfirm, full_logout
 
 User = get_user_model()
@@ -48,33 +49,34 @@ class SignUpView(GenericAPIView):
         )
 
 
-# class LoginView(auth_views.LoginView):
-#     serializer_class = serializers.LoginSerializer
-
-
-class LoginView(GenericAPIView):
-    """
-    Альтернатива использованию auth_views.LoginView
-    """
-
-    permission_classes = (AllowAny,)
+class LoginView(auth_views.LoginView):
     serializer_class = serializers.LoginSerializer
 
-    def post(self, request):
-        service = LoginService()
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+# class LoginView(GenericAPIView):
+#     """
+#     Альтернатива использованию auth_views.LoginView
+#     для dev/prod редактировать set_cookie
+#     """
 
-        data = service.get_tokens(serializer.validated_data['user'])
+#     permission_classes = (AllowAny,)
+#     serializer_class = serializers.LoginSerializer
 
-        jwt_serializer = serializers.JWTSerializer(data=data)
-        jwt_serializer.is_valid(raise_exception=True)
+#     def post(self, request):
+#         service = LoginService()
 
-        response = Response(jwt_serializer.data, status=status.HTTP_200_OK)
-        service.set_cookie(response)
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
 
-        return response
+#         data = service.get_tokens(serializer.validated_data['user'])
+
+#         jwt_serializer = serializers.JWTSerializer(data=data)
+#         jwt_serializer.is_valid(raise_exception=True)
+
+#         response = Response(jwt_serializer.data, status=status.HTTP_200_OK)
+#         service.set_cookie(response)
+
+#         return response
 
 
 class LogoutView(auth_views.LogoutView):

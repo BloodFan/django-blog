@@ -39,7 +39,7 @@ INTERNAL_IPS: list[str] = []
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://127.0.0.1:8000/')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://127.0.0.1:8008/')
 
 ADMIN_EMAIL = os.environ.get('EMAIL_HOST_USER', 'test@test.com')
 SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', 'test@test.com')

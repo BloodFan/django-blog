@@ -1,5 +1,6 @@
+from rest_framework import mixins
 from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from api.v1.blog.filters import ArticleFilter
 
@@ -62,11 +63,15 @@ class CategoryViewSet(ModelViewSet):
         return serializers.CategorySerializer
 
 
-class CommentViewSet(ModelViewSet):
+class CommentViewSet(
+    GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+):
     permission_classes = (AllowAny,)
 
     def get_queryset(self):
-        return BlogService().comment_queryset(self.kwargs['slug'], self.request.user)
+        return BlogService().comment_queryset(self.kwargs['article_slug'], self.request.user)
 
     def get_serializer_class(self):
         if self.action == 'list':

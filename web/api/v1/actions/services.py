@@ -19,6 +19,13 @@ class LikeObjectsChoices(TextChoices):
 
 
 class LikeService:
+    '''
+    model передается через data-model="comment" or data-model="article"
+    object_id через data-id="${comment.id}"
+    за управление в js отвечает likeHandler
+
+    '''
+
     def __init__(self, object_id: int, vote: Like.Vote, user: UserType, model: LikeObjectsChoices) -> None:
         self.object_id = object_id
         self.vote = vote
