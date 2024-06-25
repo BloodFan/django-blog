@@ -23,7 +23,7 @@ def test_create_comment(auth_client, article):
     }
 
     response = auth_client.post(
-        path=reverse('api:v1:blog:comments', kwargs={'slug': article.slug}),
+        path=reverse('api:v1:blog:comments-list', kwargs={'article_slug': article.slug}),
         data=payload,
     )
 
@@ -33,7 +33,7 @@ def test_create_comment(auth_client, article):
     payload = {'content': 'И я горжусь этим!', 'parent': article.comment_set.first().id}
 
     response = auth_client.post(
-        path=reverse('api:v1:blog:comments', kwargs={'slug': article.slug}),
+        path=reverse('api:v1:blog:comments-list', kwargs={'article_slug': article.slug}),
         data=payload,
     )
 
